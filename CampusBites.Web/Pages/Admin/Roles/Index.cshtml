@@ -1,0 +1,166 @@
+﻿@page
+@model CampusBites.Web.Pages.Admin.Roles.IndexModel
+@{
+    ViewData["Title"] = "Role Management";
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-5 fw-bold mb-2">@ViewData["Title"]</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-page="/Admin/Dashboard/Index">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Roles</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Alerts -->
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="alert alert-info alert-dismissible fade show animate__animated animate__fadeIn" role="alert">
+            <i class="bi bi-info-circle-fill me-2"></i> @Model.Message
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Create Role Card -->
+    <div class="card border-0 shadow-sm mb-4 animate__animated animate__fadeIn">
+        <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-plus-circle me-2"></i>Create New Role</h5>
+            <form method="post" asp-page-handler="CreateRole" class="mt-3">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 mb-3"></div>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-shield-lock"></i></span>
+                    <input asp-for="NewRoleName" class="form-control" placeholder="Enter role name" />
+                    <button type="submit" class="btn btn-success">
+                        <span class="submit-text">Create</span>
+                        <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+                    </button>
+                </div>
+                <span asp-validation-for="NewRoleName" class="text-danger small mt-1 d-block"></span>
+            </form>
+        </div>
+    </div>
+
+    <!-- Roles Table Card -->
+    <div class="card border-0 shadow-sm animate__animated animate__fadeIn">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Role Name</th>
+                            <th>Users</th>
+                            <th>Permissions</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Roles.Any())
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center py-4">
+                                    <i class="bi bi-shield-lock text-muted fs-1"></i>
+                                    <h5 class="mt-2">No roles found</h5>
+                                    <p class="text-muted">Create your first role above</p>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var role in Model.Roles)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar avatar-sm me-2">
+                                                <span class="avatar-initial rounded-circle bg-primary text-white">
+                                                    @role.Name[0].ToString().ToUpper()
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <span class="fw-bold">@role.Name</span>
+                                                @if (role.Name == CampusBites.Infrastructure.Identity.ApplicationDbInitializer.Roles.Admin ||
+                                               role.Name == CampusBites.Infrastructure.Identity.ApplicationDbInitializer.Roles.User)
+                                                {
+                                                    <small class="badge bg-secondary ms-2">System Role</small>
+                                                }
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">0 users</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-purple">0 permissions</span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex gap-2">
+                                            <a asp-page="./Edit" asp-route-id="@role.Id" class="btn btn-sm btn-outline-primary" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+
+                                            <a asp-page="./ManagePermissions" asp-route-roleName="@role.Name"
+                                               class="btn btn-sm btn-outline-success" title="Manage Permissions">
+                                                <i class="bi bi-key"></i>
+                                            </a>
+
+                                            <form method="post" asp-page-handler="DeleteRole" asp-route-id="@role.Id"
+                                                  onsubmit="return confirm('Are you sure you want to delete the role: @role.Name?');">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                        title="Delete"
+                                                        disabled="@(role.Name == CampusBites.Infrastructure.Identity.ApplicationDbInitializer.Roles.Admin ||
+                                                                  role.Name == CampusBites.Infrastructure.Identity.ApplicationDbInitializer.Roles.User)">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Make table responsive for mobile
+            const tableCells = document.querySelectorAll('.table td');
+
+            if (window.innerWidth < 768) {
+                const headers = ['Role Name', 'Users', 'Permissions', 'Actions'];
+                tableCells.forEach((td, index) => {
+                    td.setAttribute('data-label', headers[index % headers.length]);
+                });
+            }
+
+            // Form submission loading state
+            const form = document.querySelector('form[asp-page-handler="CreateRole"]');
+            if (form) {
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const submitText = submitBtn.querySelector('.submit-text');
+                const spinner = submitBtn.querySelector('.spinner-border');
+
+                form.addEventListener('submit', function() {
+                    submitBtn.disabled = true;
+                    submitText.textContent = 'Creating...';
+                    spinner.classList.remove('d-none');
+                });
+            }
+        });
+    </script>
+}

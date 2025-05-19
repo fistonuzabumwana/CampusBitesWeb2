@@ -1,0 +1,187 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Authorization
+@using CampusBites.Application.Common.Security
+@inject IAuthorizationService AuthorizationService
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc.Localization
+@using CampusBites.Web.Resources
+@inject IHtmlLocalizer<SharedResource> SharedLocalizer
+@inject IOptions<RequestLocalizationOptions> LocOptions
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.Extensions.Options
+@inject IViewLocalizer Localizer
+
+<!DOCTYPE html>
+@{
+    // --- Determine Theme ---
+    var themePreference = User.FindFirstValue("ui_theme") ?? "light";
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+    var cultureItems = LocOptions.Value?.SupportedUICultures?
+        .Select(c => new SelectListItem { Value = c.Name, Text = c.DisplayName })
+        .ToList() ?? new List<SelectListItem>();
+    var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path}{Context.Request.QueryString}";
+}
+<html lang="en" data-bs-theme="">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CampusBites</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+     <link rel="stylesheet" href="~/CampusBites.Web.styles.css" asp-append-version="true" />
+    <link href="~/css/imagedrag.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+	<link rel="stylesheet" href="~/lib/fontawesome/css/all.min.css" />
+	<link rel="stylesheet" href="~/lib/bootstrap-icons/bootstrap-icons.css" />
+	<link rel="stylesheet" href="~/lib/animate.css/animate.min.css" />
+	<link rel="stylesheet" href="~/lib/flatpickr/flatpickr.min.css" />
+	<link rel="stylesheet" href="~/lib/select2/css/select2.min.css" />
+	<link rel="stylesheet" href="~/lib/datatables/datatables.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.12.1/font/bootstrap-icons.css" />
+
+
+
+    <script>
+        (function () {
+            const storedTheme = '@themePreference';
+            let themeToApply = 'light';
+
+            if (storedTheme === 'Dark') {
+                themeToApply = 'dark';
+            } else if (storedTheme === 'System') {
+                themeToApply = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            document.documentElement.setAttribute('data-bs-theme', themeToApply);
+
+            // Add animation class to body for initial load
+            document.addEventListener('DOMContentLoaded', function() {
+                document.body.classList.add('fade-in');
+            });
+        })();
+    </script>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-toggleable-sm">
+            <div class="container">
+                <a class="navbar-brand animate__animated animate__fadeInLeft" asp-area="" asp-page="/Index">
+                    <span class="d-inline-block align-middle">CampusBites</span>
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link text-body" asp-area="" asp-page="/Index">@SharedLocalizer["Home"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-body" asp-area="" asp-page="/Menu">@SharedLocalizer["Menu"]</a>
+                        </li>
+
+                        @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.MenuItems.View)).Succeeded ||
+                        (await AuthorizationService.AuthorizeAsync(User, Permissions.Users.View)).Succeeded ||
+                        (await AuthorizationService.AuthorizeAsync(User, Permissions.Users.ManageRoles)).Succeeded ||
+                        (await AuthorizationService.AuthorizeAsync(User, Permissions.Orders.ViewAll)).Succeeded)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-body" href="#" role="button"
+                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                    @SharedLocalizer["Admin Tools"]
+                                </a>
+                                <ul class="dropdown-menu animate__animated animate__fadeIn">
+                                    @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.Orders.ViewAll)).Succeeded)
+                                    {
+                                        <li><a class="dropdown-item" asp-area="" asp-page="/Admin/Dashboard/Index">Dashboard</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                    }
+                                    @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.MenuItems.View)).Succeeded)
+                                    {
+                                        <li><a class="dropdown-item" asp-area="" asp-page="/Admin/MenuItems/Index">Manage Menu</a></li>
+                                    }
+                                    @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.Users.View)).Succeeded)
+                                    {
+                                        <li><a class="dropdown-item" asp-area="" asp-page="/Admin/Users/Index">@SharedLocalizer["Manage Users"]</a></li>
+                                    }
+                                    @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.Users.ManageRoles)).Succeeded)
+                                    {
+                                        <li><a class="dropdown-item" asp-area="" asp-page="/Admin/Roles/Index">@SharedLocalizer["Manage Roles"]</a></li>
+                                    }
+                                    @if ((await AuthorizationService.AuthorizeAsync(User, Permissions.Reports.ViewSales)).Succeeded)
+                                    {
+                                        <li><a class="dropdown-item" asp-area="" asp-page="/Admin/Reports/OrderList">View Reports</a></li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link text-body position-relative" asp-area="" asp-page="/Cart">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cart me-1" viewBox="0 0 16 16">
+                                    <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                                </svg>
+                                @SharedLocalizer["Cart"]
+                                <span id="cart-count-display" class="badge bg-primary rounded-pill position-absolute top-0 start-100 translate-middle" style="display: none;">0</span>
+                            </a>
+                        </li>
+                        <partial name="_LoginPartial" />
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Add this to your _Layout.cshtml -->
+        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+            <div id="notificationToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="me-auto">Notification</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body" id="toastMessage"></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container" style="margin-bottom: 200px">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+    
+    <footer class="footer mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; @DateTime.Now.Year - CampusBites - <a asp-area="" asp-page="/Privacy">@SharedLocalizer["Privacy"]</a></p>
+                </div>
+               
+                <div class="col-md-6 text-md-end">
+                    @if (cultureItems.Count > 1)
+                    {
+                        <form id="selectLanguage" asp-controller="Culture" asp-action="SetLanguage"
+                              asp-route-returnUrl="@returnUrl" method="post" class="form-inline">
+                            <label class="me-2" for="cultureSelect">@SharedLocalizer["Language:"]</label>
+                            <select name="culture" id="cultureSelect" class="form-select form-select-sm d-inline w-auto"
+                                    asp-for="@requestCulture!.RequestCulture.UICulture.Name"
+                                    asp-items="cultureItems"
+                                    onchange="this.form.submit();">
+                            </select>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="~/js/imagedrag.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

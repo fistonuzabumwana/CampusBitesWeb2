@@ -1,0 +1,443 @@
+﻿@page
+@model IndexModel
+@using CampusBites.Infrastructure.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    ViewData["Title"] = "Profile Settings";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+    var user = await SignInManager.UserManager.GetUserAsync(User);
+
+}
+
+<div class="profile-settings">
+    <div class="settings-header">
+        <h4>Profile Settings</h4>
+        <div class="brand-divider"></div>
+    </div>
+
+    <partial name="_StatusMessage" for="StatusMessage" />
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>@Model.ErrorMessage</span>
+        </div>
+    }
+
+    <div class="settings-card">
+        <form id="profile-form" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <!-- Profile Picture Section -->
+            <div class="form-group text-center mb-4">
+                <div class="profile-picture-container">
+              
+                    @if (!string.IsNullOrEmpty(user?.ProfilePictureUrl))
+                    {
+                        // Extract the filename from the stored ProfilePictureUrl
+                        var profileImageFileName = System.IO.Path.GetFileName(user.ProfilePictureUrl);
+                        // Construct the URL to the FilesController action
+                        <img src="/api/files/profile-image/@profileImageFileName?v=@DateTime.Now.Ticks" alt="Profile Picture" class="profile-picture" />
+                    }
+                    else
+                    {
+                        <img src="/images/default-profile.png" alt="Default Profile" class="profile-picture" />
+                    }
+
+                    <label for="profile-picture-input" class="profile-picture-edit">
+                        <i class="bi bi-camera-fill"></i>
+                    </label>
+                    <input asp-for="ProfilePicture" type="file" id="profile-picture-input" class="d-none"
+                           accept="image/*" />
+                </div>
+                <span asp-validation-for="ProfilePicture" class="error-message"></span>
+            </div>
+
+            <!-- Name Fields -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Input.FirstName">
+                            <i class="bi bi-person-badge"></i>
+                            <span>First Name</span>
+                        </label>
+                        <input asp-for="Input.FirstName" class="form-control" />
+                        <span asp-validation-for="Input.FirstName" class="error-message"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Input.LastName">
+                            <i class="bi bi-person-badge"></i>
+                            <span>Last Name</span>
+                        </label>
+                        <input asp-for="Input.LastName" class="form-control" />
+                        <span asp-validation-for="Input.LastName" class="error-message"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Username (readonly) -->
+            <div class="form-group">
+                <label asp-for="Username">
+                    <i class="bi bi-person-fill"></i>
+                    <span>Username</span>
+                </label>
+                <input asp-for="Username" class="form-control" disabled />
+            </div>
+
+            <!-- Phone Number -->
+            <div class="form-group">
+                <label asp-for="Input.PhoneNumber">
+                    <i class="bi bi-telephone-fill"></i>
+                    <span>Phone Number</span>
+                </label>
+                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Enter your phone number" />
+                <span asp-validation-for="Input.PhoneNumber" class="error-message"></span>
+            </div>
+
+            <!-- Theme Preference -->
+            <div class="settings-section">
+                <h5>
+                    <i class="bi bi-palette-fill"></i>
+                    <span>Theme Preference</span>
+                </h5>
+                <div class="theme-options">
+                    <div class="form-check">
+                        <input asp-for="SelectedTheme" type="radio" value="Light" class="form-check-input" id="theme-light" />
+                        <label class="form-check-label" for="theme-light">
+                            <div class="theme-card">
+                                <div class="theme-preview light"></div>
+                                <span>Light</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input asp-for="SelectedTheme" type="radio" value="Dark" class="form-check-input" id="theme-dark" />
+                        <label class="form-check-label" for="theme-dark">
+                            <div class="theme-card">
+                                <div class="theme-preview dark"></div>
+                                <span>Dark</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input asp-for="SelectedTheme" type="radio" value="System" class="form-check-input" id="theme-system" />
+                        <label class="form-check-label" for="theme-system">
+                            <div class="theme-card">
+                                <div class="theme-preview system"></div>
+                                <span>System</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifications -->
+            <div class="settings-section">
+                <h5>
+                    <i class="bi bi-bell-fill"></i>
+                    <span>Notifications</span>
+                </h5>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" asp-for="NotifyOrderStatusEmail" id="notify-switch">
+                    <label class="form-check-label" for="notify-switch">Email Notifications</label>
+                </div>
+                <small class="text-muted">Receive updates about your order status via email</small>
+            </div>
+
+            <button id="update-profile-button" type="submit" class="btn btn-primary">
+                <span class="button-text">Save Changes</span>
+                <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+            </button>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* Add these new styles */
+    .profile-picture-container {
+        position: relative;
+        width: 150px;
+        height: 150px;
+        margin: 0 auto 1rem;
+    }
+
+    .profile-picture {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid var(--primary);
+    }
+
+    .profile-picture-edit {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background: var(--primary);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .profile-picture-edit:hover {
+            transform: scale(1.1);
+            background: var(--primary-dark);
+        }
+
+        .profile-picture-edit i {
+            font-size: 1.2rem;
+        }
+
+    /* Keep existing styles and add responsive adjustments */
+    @@media (max-width: 576px) {
+        .profile-picture-container {
+            width: 120px;
+            height: 120px;
+        }
+    }
+
+    .profile-settings {
+        color: var(--text);
+    }
+
+    .settings-header {
+        margin-bottom: 2rem;
+    }
+
+        .settings-header h4 {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+    .brand-divider {
+        height: 3px;
+        width: 60px;
+        background: var(--primary);
+        border-radius: 3px;
+    }
+
+    .alert {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .alert-danger {
+        background-color: rgba(220, 53, 69, 0.1);
+        border-left: 3px solid #dc3545;
+    }
+
+        .alert-danger i {
+            color: #dc3545;
+        }
+
+    .settings-card {
+        background: var(--card-bg);
+        border-radius: 0.75rem;
+        padding: 2rem;
+        border: 1px solid var(--border);
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+        .form-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group i {
+            color: var(--primary);
+        }
+
+    .form-control {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.25rem var(--primary-light);
+        }
+
+    .error-message {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    .settings-section {
+        margin: 2rem 0;
+        padding: 1.5rem;
+        background: var(--bg);
+        border-radius: 0.5rem;
+        border: 1px solid var(--border);
+    }
+
+        .settings-section h5 {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .settings-section i {
+            color: var(--primary);
+        }
+
+    .theme-options {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .form-check {
+        padding: 0;
+        margin: 0;
+    }
+
+    .theme-card {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        transition: all 0.3s ease;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .form-check-input:checked ~ .theme-card {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 2px var(--primary);
+    }
+
+    .theme-preview {
+        height: 80px;
+        border-radius: 0.25rem;
+        margin-bottom: 0.5rem;
+        border: 1px solid var(--border);
+    }
+
+        .theme-preview.light {
+            background: #f8f9fa;
+        }
+
+        .theme-preview.dark {
+            background: #212529;
+        }
+
+        .theme-preview.system {
+            background: linear-gradient(to right, #f8f9fa 50%, #212529 50%);
+        }
+
+    .form-switch {
+        padding-left: 3.5em;
+        margin-bottom: 0.5rem;
+    }
+
+        .form-switch .form-check-input {
+            width: 2.5em;
+            height: 1.5em;
+            margin-left: -3.5em;
+            background-color: var(--border);
+            border-color: var(--border);
+        }
+
+            .form-switch .form-check-input:checked {
+                background-color: var(--primary);
+                border-color: var(--primary);
+            }
+
+    .btn-primary {
+        background-color: var(--primary);
+        border-color: var(--primary);
+        padding: 0.75rem 2rem;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        margin-top: 1rem;
+    }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+
+    @@media (max-width: 768px) {
+        .theme-options {
+            flex-direction: column;
+        }
+
+        .settings-card {
+            padding: 1.5rem;
+        }
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+                      // Profile picture preview
+            const profilePictureInput = document.getElementById('profile-picture-input');
+            const profilePicturePreview = document.getElementById('profile-picture-preview');
+
+            profilePictureInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        profilePicturePreview.src = e.target.result;
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+
+            const form = document.getElementById('profile-form');
+            const submitBtn = document.getElementById('update-profile-button');
+            const buttonText = submitBtn.querySelector('.button-text');
+            const spinner = submitBtn.querySelector('.spinner-border');
+
+            form.addEventListener('submit', function() {
+                submitBtn.disabled = true;
+                buttonText.textContent = 'Saving...';
+                spinner.classList.remove('d-none');
+            });
+
+            // Theme selection animation
+            document.querySelectorAll('.form-check-input').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.checked) {
+                        const card = this.closest('.form-check').querySelector('.theme-card');
+                        card.classList.add('animate__animated', 'animate__pulse');
+                        setTimeout(() => {
+                            card.classList.remove('animate__animated', 'animate__pulse');
+                        }, 1000);
+                    }
+                });
+            });
+        });
+    </script>
+}

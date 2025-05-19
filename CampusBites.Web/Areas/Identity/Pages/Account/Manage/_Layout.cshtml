@@ -1,0 +1,120 @@
+﻿@{
+    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout != null)
+    {
+        Layout = parentLayout.ToString();
+    }
+    else
+    {
+        Layout = "/Areas/Identity/Pages/_Layout.cshtml";
+    }
+}
+
+<div class="account-management-container">
+    <div class="futuristic-panel">
+        <div class="account-header">
+            <h3 class="brand-title">ACCOUNT DASHBOARD</h3>
+            <div class="brand-divider"></div>
+        </div>
+
+        <div class="account-body">
+            <div class="navigation-panel">
+                <partial name="_ManageNav" />
+            </div>
+
+            <div class="content-panel">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <style>
+        :root {
+            --primary: #FF5B00;
+            --primary-light: rgba(255, 91, 0, 0.1);
+            --primary-dark: #cc4a00;
+            --text: #333;
+            --bg: white;
+            --card-bg: #f8f9fa;
+            --border: #e9ecef;
+        }
+
+        [data-bs-theme="dark"] {
+            --text: #f8f9fa;
+            --bg: #212529;
+            --card-bg: #2b3035;
+            --border: #495057;
+        }
+
+        .account-management-container {
+            min-height: 100vh;
+            background: var(--bg);
+            padding: 2rem;
+        }
+
+        .futuristic-panel {
+            background: var(--bg);
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .account-header {
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .brand-title {
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        .brand-divider {
+            height: 3px;
+            background: white;
+            width: 80px;
+            margin: 1rem auto;
+            opacity: 0.7;
+        }
+
+        .account-body {
+            display: flex;
+            min-height: 70vh;
+        }
+
+        .navigation-panel {
+            width: 250px;
+            background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            padding: 1.5rem;
+        }
+
+        .content-panel {
+            flex: 1;
+            padding: 2rem;
+            background: var(--bg);
+        }
+
+        @@media (max-width: 768px) {
+            .account-body {
+                flex-direction: column;
+            }
+
+            .navigation-panel {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+        }
+    </style>
+    
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}

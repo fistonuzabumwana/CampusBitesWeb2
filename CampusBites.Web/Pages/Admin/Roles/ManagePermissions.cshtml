@@ -1,0 +1,84 @@
+﻿@page "{id}"
+@model CampusBites.Web.Pages.Admin.Roles.ManagePermissionsModel
+@{
+    ViewData["Title"] = $"Manage Permissions for {Model.ViewModel.RoleName}";
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+
+<form method="post">
+    @* Hidden input to post RoleId back *@
+    <input type="hidden" asp-for="ViewModel.RoleId" />
+    @* Hidden input to post RoleName back *@
+    <input type="hidden" asp-for="ViewModel.RoleName" />
+
+    @* Group permissions by module for better readability *@
+    @{
+        var permissionsGrouped = Model.ViewModel.AllPermissionValues
+            .Select(p => new { Value = p, Module = p.Split('.')[1] }) // Extract module name (e.g., "MenuItems")
+            .GroupBy(p => p.Module)
+            .OrderBy(g => g.Key); // Order modules alphabetically
+    }
+
+    @foreach (var group in permissionsGrouped)
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5>@group.Key Permissions</h5>
+            </div>
+            <div class="card-body">
+                 <div class="row">
+                    @{
+                        var permissionsInGroup = group.ToList();
+                        int midpoint = (permissionsInGroup.Count + 1) / 2;
+                    }
+                     <div class="col-md-6">
+                        @for(int i = 0; i < midpoint; i++)
+                        {
+                            var permission = permissionsInGroup[i];
+                            <div class="form-check mb-2">
+                                <input type="checkbox"
+                                       name="ViewModel.SelectedPermissions" @* Bind to this list *@
+                                       value="@permission.Value"
+                                       class="form-check-input"
+                                       id="perm-@permission.Value"
+                                       checked="@Model.ViewModel.AssignedPermissionClaims.Contains(permission.Value)">
+                                <label class="form-check-label" for="perm-@permission.Value" title="@permission.Value">
+                                    @permission.Value.Split('.').Last() @* Show only action name, e.g., "Create" *@
+                                </label>
+                            </div>
+                        }
+                    </div>
+                    <div class="col-md-6">
+                         @for(int i = midpoint; i < permissionsInGroup.Count; i++)
+                        {
+                            var permission = permissionsInGroup[i];
+                            <div class="form-check mb-2">
+                                <input type="checkbox"
+                                       name="ViewModel.SelectedPermissions"
+                                       value="@permission.Value"
+                                       class="form-check-input"
+                                       id="perm-@permission.Value"
+                                       checked="@Model.ViewModel.AssignedPermissionClaims.Contains(permission.Value)">
+                                <label class="form-check-label" for="perm-@permission.Value" title="@permission.Value">
+                                    @permission.Value.Split('.').Last()
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-success">Save Permissions</button>
+        <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
+    </div>
+
+</form>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

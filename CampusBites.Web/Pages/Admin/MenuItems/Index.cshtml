@@ -1,0 +1,109 @@
+﻿@page
+@model CampusBites.Web.Pages.Admin.MenuItems.IndexModel
+@{
+    ViewData["Title"] = "Manage Menu Items";
+    Layout = "_Layout";
+}
+
+<div class="admin-container animate__animated animate__fadeIn">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h1 class="display-5 fw-bold text-gradient">@ViewData["Title"]</h1>
+        <a asp-page="Create" class="btn btn-primary btn-hover-glow">
+            <i class="bi bi-plus-circle me-2"></i>Create New
+        </a>
+    </div>
+
+    @* Notification Alert *@
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="alert alert-dismissible fade show alert-glass" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <span>@Model.Message</span>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @* Menu Items Table *@
+    <div class="card glass-card border-0 overflow-hidden">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="glass-header">
+                        <tr>
+                            <th class="ps-4"><i class="bi bi-card-heading me-2"></i>Name</th>
+                            <th><i class="bi bi-tags me-2"></i>Category</th>
+                            <th><i class="bi bi-currency-exchange me-2"></i>Price</th>
+                            <th><i class="bi bi-check-circle me-2"></i>Available</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.MenuItems)
+                        {
+                            <tr class="animate__animated animate__fadeInUp" style="--animate-order: @(Model.MenuItems.IndexOf(item)) + 1">
+                                <td class="ps-4 fw-medium">@Html.DisplayFor(modelItem => item.Name)</td>
+                                <td>
+                                    <span class="badge bg-primary-light text-primary rounded-pill">
+                                        @Html.DisplayFor(modelItem => item.Category)
+                                    </span>
+                                </td>
+                                <td class="fw-bold">@item.Price.ToString("C", System.Globalization.CultureInfo.CreateSpecificCulture("rw-RW"))</td>
+                                <td>
+                                    <span class="availability-badge @(item.IsAvailable ? "bg-success-light text-success" : "bg-danger-light text-danger")">
+                                        @(item.IsAvailable ? "Available" : "Unavailable")
+                                    </span>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <a asp-page="./Edit" asp-route-id="@item.Id" 
+                                           class="btn btn-sm btn-icon btn-outline-primary rounded-circle"
+                                           data-bs-toggle="tooltip" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form method="post" asp-page-handler="Delete" asp-route-id="@item.Id" 
+                                              class="d-inline delete-form"
+                                              onsubmit="return confirm('Are you sure you want to delete @item.Name?');">
+                                            <button type="submit" 
+                                                    class="btn btn-sm btn-icon btn-outline-danger rounded-circle"
+                                                    data-bs-toggle="tooltip" title="Delete">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Initialize tooltips
+        document.addEventListener('DOMContentLoaded', function() {
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Add animation to delete button
+            document.querySelectorAll('.delete-form button').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    if (!confirm(this.closest('form').getAttribute('onsubmit').match(/return confirm\('(.*?)'\)/)[1])) {
+                        e.preventDefault();
+                    }
+                });
+            });
+        });
+    </script>
+}

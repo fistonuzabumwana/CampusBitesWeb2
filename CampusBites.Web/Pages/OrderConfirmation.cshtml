@@ -1,0 +1,106 @@
+﻿@page
+@model CampusBites.Web.Pages.OrderConfirmationModel
+@{
+    ViewData["Title"] = "Order Confirmation";
+}
+
+<div class="container py-5">
+    <div class="text-center mb-5 animate__animated animate__fadeIn">
+        <div class="confirmation-icon mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="var(--primary-color)" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+            </svg>
+            <div class="confirmation-pulse"></div>
+        </div>
+
+        <h1 class="display-4 fw-bold mb-3">Order Confirmed!</h1>
+        <div class="d-flex justify-content-center mb-4">
+            <div class="bg-primary" style="height: 4px; width: 80px; border-radius: 2px;"></div>
+        </div>
+
+        <div class="confirmation-alert alert border-0 shadow-sm mb-5">
+            <div class="d-flex align-items-center">
+                <div class="flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-check-circle-fill text-success" viewBox="0 0 16 16">
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+                    </svg>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <h4 class="alert-heading mb-1">@Model.ConfirmationMessage</h4>
+                    <p class="mb-0">Your order has been processed successfully.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="order-details card border-0 shadow-sm mb-5 animate__animated animate__fadeInUp">
+            <div class="card-body text-start">
+                <h4 class="card-title mb-4 d-flex align-items-center">
+                    <i class="bi bi-receipt me-2 text-primary"></i>
+                    <span>Order Details</span>
+                </h4>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <h5 class="text-muted mb-2">Order Number</h5>
+                        <p class="fs-5 fw-bold">#@(Model.OrderId.ToString("D8") ?? "N/A")</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <h5 class="text-muted mb-2">Estimated Delivery</h5>
+                        <p class="fs-5 fw-bold">@DateTime.Now.AddMinutes(45).ToString("hh:mm tt") - @DateTime.Now.AddHours(1).ToString("hh:mm tt")</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <h5 class="text-muted mb-2">Payment Method</h5>
+                        <p class="fs-5 fw-bold">@Model.PaymentMethod</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <h5 class="text-muted mb-2">Total Amount</h5>
+                        <p class="fs-5 fw-bold text-primary">@Model.TotalAmount.ToString("C", new System.Globalization.CultureInfo("fr-RW"))</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+            <a asp-page="/Index" class="btn btn-primary btn-lg px-4 py-2">
+                <i class="bi bi-house-door me-2"></i>Back to Home
+            </a>
+            <a href="#" class="btn btn-outline-primary btn-lg px-4 py-2">
+                <i class="bi bi-clock-history me-2"></i>Track Order
+            </a>
+            <a href="#" class="btn btn-outline-secondary btn-lg px-4 py-2">
+                <i class="bi bi-receipt me-2"></i>View Receipt
+            </a>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add animation class to elements
+            const elements = document.querySelectorAll('.order-details, .btn');
+            elements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.classList.add('animate__animated', 'animate__fadeInUp');
+                }, index * 100);
+            });
+
+            // Confetti effect on load
+            if (typeof confetti === 'function') {
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: 0.6 },
+                        colors: ['#FF5B00', '#FF8C00', '#FFEEE6']
+                    });
+                }, 500);
+            }
+        });
+    </script>
+
+    <!-- Optional: Add confetti library for celebration effect -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+}

@@ -1,0 +1,16 @@
+﻿/* Styling for the drag-and-drop zone */
+#imageDropZone {
+    border: 2px dashed #ccc;
+    transition: border-color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+    /* Style when dragging over the zone */
+    #imageDropZone.dragover-active {
+        border-color: #0d6efd; /* Bootstrap primary blue */
+        background-color: #eef;
+    }
+
+/* Style for the preview image */
+#imagePreview {
+    object-fit: contain; /* Adjust as needed: cover, contain */
+}

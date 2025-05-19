@@ -1,0 +1,319 @@
+﻿@page "{id}"
+@model CampusBites.Web.Pages.Admin.Users.EditModel
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-5 fw-bold mb-2">Manage User: @Model.UserViewModel.UserName</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-page="/Admin/Dashboard/Index">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a asp-page="./Index">Users</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Main Form Column -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 mb-4"></div>
+                        <input type="hidden" asp-for="UserViewModel.Id" />
+
+                        <!-- User Info Section -->
+                        <div class="user-info-section mb-5">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="avatar avatar-xl me-3">
+                                    <span class="avatar-initial rounded-circle bg-primary text-white">
+                                        @Model.UserViewModel.UserName[0].ToString().ToUpper()
+                                    </span>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">@Model.UserViewModel.UserName</h5>
+                                    <p class="text-muted mb-0">@Model.UserViewModel.Email</p>
+                                </div>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control-plaintext" value="@Model.UserViewModel.UserName" readonly>
+                                        <label>Username</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control-plaintext" value="@Model.UserViewModel.Email" readonly>
+                                        <label>Email</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Role Management Section -->
+                        <div class="role-management-section mb-5">
+                            <h5 class="section-title mb-4 d-flex align-items-center">
+                                <i class="bi bi-shield-lock me-2"></i>
+                                <span>Role Assignments</span>
+                            </h5>
+
+                            @if (Model.UserViewModel.AllRoles.Any())
+                            {
+                                <div class="role-checkboxes">
+                                    <div class="row g-3">
+                                        @foreach (var role in Model.UserViewModel.AllRoles)
+                                        {
+                                            <div class="col-md-6">
+                                                <div class="form-check card p-3">
+                                                    <input type="checkbox"
+                                                           name="UserViewModel.SelectedRoleNames"
+                                                           value="@role.Value"
+                                                           class="form-check-input"
+                                                           id="role-@role.Value"
+                                                           checked="@Model.UserViewModel.UserRoles.Contains(role.Value)">
+                                                    <label class="form-check-label d-flex align-items-center" for="role-@role.Value">
+                                                        <span class="role-badge me-2 @(Model.UserViewModel.UserRoles.Contains(role.Value) ? "bg-primary" : "bg-secondary")">
+                                                            @role.Value[0].ToString().ToUpper()
+                                                        </span>
+                                                        <span>@role.Text</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-info">
+                                    No roles defined in the system.
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Permission Management Section -->
+                        <div class="permission-management-section mb-4">
+                            <h5 class="section-title mb-4 d-flex align-items-center">
+                                <i class="bi bi-key me-2"></i>
+                                <span>Direct Permissions</span>
+                            </h5>
+
+                            @if (Model.UserViewModel.AllPermissionValues.Any())
+                            {
+                                <div class="permission-checkboxes">
+                                    <div class="row g-3">
+                                        @{
+                                            var permissions = Model.UserViewModel.AllPermissionValues;
+                                            int midpoint = (permissions.Count + 1) / 2;
+                                        }
+
+                                        <div class="col-md-6">
+                                            @for (int i = 0; i < midpoint; i++)
+                                            {
+                                                var permission = permissions[i];
+                                                var displayName = permission.Replace("Permissions.", "").Replace(".", " » ");
+                                                <div class="form-check card p-3 mb-2">
+                                                    <input type="checkbox"
+                                                           name="UserViewModel.SelectedPermissions"
+                                                           value="@permission"
+                                                           class="form-check-input"
+                                                           id="perm-@permission"
+                                                           checked="@Model.UserViewModel.AssignedPermissionClaims.Contains(permission)">
+                                                    <label class="form-check-label" for="perm-@permission" title="@permission">
+                                                        <span class="d-flex align-items-center">
+                                                            <span class="permission-icon me-2">
+                                                                <i class="bi @(Model.UserViewModel.AssignedPermissionClaims.Contains(permission) ? "bi-check-circle-fill text-success" : "bi-circle")"></i>
+                                                            </span>
+                                                            <span>@displayName</span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                            }
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            @for (int i = midpoint; i < permissions.Count; i++)
+                                            {
+                                                var permission = permissions[i];
+                                                var displayName = permission.Replace("Permissions.", "").Replace(".", " » ");
+                                                <div class="form-check card p-3 mb-2">
+                                                    <input type="checkbox"
+                                                           name="UserViewModel.SelectedPermissions"
+                                                           value="@permission"
+                                                           class="form-check-input"
+                                                           id="perm-@permission"
+                                                           checked="@Model.UserViewModel.AssignedPermissionClaims.Contains(permission)">
+                                                    <label class="form-check-label" for="perm-@permission" title="@permission">
+                                                        <span class="d-flex align-items-center">
+                                                            <span class="permission-icon me-2">
+                                                                <i class="bi @(Model.UserViewModel.AssignedPermissionClaims.Contains(permission) ? "bi-check-circle-fill text-success" : "bi-circle")"></i>
+                                                            </span>
+                                                            <span>@displayName</span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-info">
+                                    No permissions defined in the system.
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions mt-5">
+                            <button type="submit" class="btn btn-primary px-4 py-2">
+                                <i class="bi bi-save me-2"></i>Save Changes
+                            </button>
+                            <a asp-page="./Index" class="btn btn-outline-secondary px-4 py-2 ms-2">
+                                <i class="bi bi-x-circle me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Summary Column -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">User Summary</h5>
+
+                    <div class="user-meta mb-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-person-circle me-2 text-muted"></i>
+                            <span>@Model.UserViewModel.UserName</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-envelope me-2 text-muted"></i>
+                            <span>@Model.UserViewModel.Email</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-shield-check me-2 text-muted"></i>
+                            <span>@(Model.UserViewModel.EmailConfirmed ? "Email Verified" : "Email Not Verified")</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-lock me-2 text-muted"></i>
+                            <span>@(Model.UserViewModel.LockoutEnabled ? "Account Lock Enabled" : "Account Lock Disabled")</span>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <h6 class="mb-3">Current Roles</h6>
+                    @if (Model.UserViewModel.UserRoles.Any())
+                    {
+                        <div class="d-flex flex-wrap gap-2 mb-4">
+                            @foreach (var role in Model.UserViewModel.UserRoles)
+                            {
+                                <span class="badge bg-primary">@role</span>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No roles assigned</p>
+                    }
+
+                    <h6 class="mb-3">Current Permissions</h6>
+                    @if (Model.UserViewModel.AssignedPermissionClaims.Any())
+                    {
+                        <ul class="list-unstyled">
+                            @foreach (var perm in Model.UserViewModel.AssignedPermissionClaims.Take(5))
+                            {
+                                <li class="mb-1">
+                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                    <small>@perm.Replace("Permissions.", "").Replace(".", " » ")</small>
+                                </li>
+                            }
+                            @if (Model.UserViewModel.AssignedPermissionClaims.Count > 5)
+                            {
+                                <li class="text-muted">+ @(Model.UserViewModel.AssignedPermissionClaims.Count - 5) more</li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No direct permissions assigned</p>
+                    }
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Quick Actions</h5>
+                    <div class="d-grid gap-2">
+                        @if (Model.UserViewModel.LockoutEnabled)
+                        {
+                            <a href="#" class="btn btn-outline-warning">
+                                <i class="bi bi-unlock me-2"></i>Unlock Account
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="#" class="btn btn-outline-danger">
+                                <i class="bi bi-lock me-2"></i>Lock Account
+                            </a>
+                        }
+                        <a href="#" class="btn btn-outline-danger">
+                            <i class="bi bi-trash me-2"></i>Delete User
+                        </a>
+                        <a href="#" class="btn btn-outline-secondary">
+                            <i class="bi bi-envelope me-2"></i>Send Password Reset
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add animation to checkbox changes
+            document.querySelectorAll('.form-check-input').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const card = this.closest('.form-check.card');
+                    if (card) {
+                        card.classList.add('animate__animated', 'animate__pulse');
+                        setTimeout(() => {
+                            card.classList.remove('animate__animated', 'animate__pulse');
+                        }, 1000);
+                    }
+                });
+            });
+
+            // Confirmation for quick actions
+            document.querySelectorAll('.btn-outline-danger, .btn-outline-warning').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const action = this.querySelector('i').classList.contains('bi-lock') ? 'lock' :
+                                  this.querySelector('i').classList.contains('bi-trash') ? 'delete' : 'unlock';
+                    if (!confirm(`Are you sure you want to ${action} this user?`)) {
+                        e.preventDefault();
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,161 @@
+﻿@using CampusBites.Infrastructure.Identity
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var user = await UserManager.GetUserAsync(User);
+}
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User) && user != null)
+    {
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="avatari avatar-sm">
+                    @if (!string.IsNullOrEmpty(user.ProfilePictureUrl))
+                    {
+                        var fileName = System.IO.Path.GetFileName(user.ProfilePictureUrl);
+                        <img src="/api/files/profile-image/@fileName"
+                             alt="Profile"
+                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEyIDJDNi40NzcgMiAyIDYuNDc3IDIgMTJzNC40NzcgMTAgMTAgMTAgMTAtNC40NzcgMTAtMTBTMTcuNTIzIDIgMTIgMnptMCAyYzQuNDE4IDAgOCAzLjU4MiA4IDhzLTMuNTgyIDgtOCA4LTgtMy41ODItOC04IDMuNTgyLTggOC04eiIvPjxwYXRoIGQ9Ik0xMiAxMWMxLjY1NyAwIDMtMS4zNDMgMy0zcy0xLjM0My0zLTMtMy0zIDEuMzQzLTMgMyAxLjM0MyAzIDMgM3ptMCAxYy0zLjUgMC02LjUgMS41LTYuNSAzLjVWMTloMTNWMTUuNWMwLTIuNS0zLTMuNS02LjUtMy41eiIvPjwvc3ZnPg=='" />
+                    }
+                    else if (!string.IsNullOrEmpty(user.FirstName)) // Display initials if no picture
+                    {
+                        <span class="avatar-initials">@user.FirstName.Substring(0, 1).ToUpper()@(user.LastName?.Length > 0 ? user.LastName.Substring(0, 1).ToUpper() : "")</span>
+                    }
+                    else if (User.Identity?.Name != null) // Fallback to username initial
+                    {
+                        <span class="avatar-initials">@User.Identity.Name.Substring(0, 1).ToUpper()</span>
+                    }
+                    else // Absolute fallback
+                    {
+                        <span class="avatar-initials">U</span>
+                    }
+                </div>
+                <span class="d-none d-lg-inline">
+                    @if (!string.IsNullOrEmpty(user.LastName))
+                    {
+                        @:Hi, @user.LastName @* Using Hi for brevity in navbar *@
+                    }
+                    else if (!string.IsNullOrEmpty(user.FirstName))
+                    {
+                        @:Hi, @user.FirstName @* Using Hi for brevity in navbar *@
+
+                    }
+                    else if (User.Identity?.Name != null)
+                    {
+                        @:Hi, @User.Identity.Name
+                    }
+                </span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow-lg rounded-2 border-0">
+                <li class="px-3 py-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="avatari avatar-md">
+                            @if (!string.IsNullOrEmpty(user.ProfilePictureUrl))
+                            {
+                                var fileName = System.IO.Path.GetFileName(user.ProfilePictureUrl);
+                                <img src="/api/files/profile-image/@fileName"
+                                     alt="Profile"
+                                     onerror="this.onerror=null;this.classList.add('avatar-initials');this.textContent='@(!string.IsNullOrEmpty(user.FirstName) ? user.FirstName[0].ToString().ToUpper() : "U")'" />
+                            }
+                            else
+                            {
+                                <span class="avatar-initials">
+                                    @(!string.IsNullOrEmpty(user.FirstName) ? user.FirstName[0].ToString().ToUpper() : "U")
+                                </span>
+                            }
+                        </div>
+                        <div>
+                            <div class="fw-semibold">@user.FirstName @user.LastName</div>
+                            <div class="text-muted small">@User.Identity?.Name</div>
+                        </div>
+                    </div>
+                </li>
+                <li><hr class="dropdown-divider my-2"></li>
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2 py-2" asp-area="Identity" asp-page="/Account/Manage/Index">
+                        <i class="bi bi-person-circle"></i> Profile
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2 py-2" asp-page="/MyOrders">
+                        <i class="bi bi-bag"></i> My Orders
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider my-2"></li>
+                <li>
+                    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })" method="post">
+                        <button type="submit" class="dropdown-item d-flex align-items-center gap-2 py-2 w-100 text-start">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+    }
+</ul>
+
+<style>
+    /* Avatari styles */
+    .avatari {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        overflow: hidden;
+        background-color: var(--bs-light);
+        color: var(--bs-dark);
+    }
+
+    .avatar-sm {
+        width: 32px;
+        height: 32px;
+        font-size: 0.875rem;
+    }
+
+    .avatar-md {
+        width: 48px;
+        height: 48px;
+        font-size: 1.25rem;
+    }
+
+    .avatari img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .avatar-initials {
+        font-weight: 600;
+        line-height: 1;
+    }
+
+    /* Dropdown styles */
+    .dropdown-menu {
+        min-width: 240px;
+    }
+
+    /* Hover effects */
+    .dropdown-item:hover {
+        background-color: var(--bs-primary-bg-subtle);
+        color: var(--bs-primary);
+    }
+
+    /* Icons */
+    .bi {
+        font-size: 1.1em;
+        width: 1.1em;
+        display: inline-block;
+        text-align: center;
+    }
+</style>

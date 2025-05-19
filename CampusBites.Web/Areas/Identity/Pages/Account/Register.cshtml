@@ -1,0 +1,370 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Join CampusBites";
+}
+
+<div class="register-container">
+    <div class="row g-0">
+        <!-- Left Column - Illustration -->
+        <div class="col-lg-6 d-none d-lg-flex align-items-center">
+            <div class="register-illustration animate__animated animate__fadeInLeft">
+                <div class="brand-logo text-center mt-4">
+                    <h3 class="display-4 fw-bold text-white">CampusBites</h3>
+                    <p class="text-white-50">Your campus food ordering experience</p>
+                </div>
+                <div class="illustration-wrapper">
+                    <img src="/images/Sign up-bro.png" alt="Register Illustration" class="img-fluid">
+                </div>
+              
+            </div>
+        </div>
+
+        <!-- Right Column - Registration Form -->
+        <div class="col-lg-6">
+            <div class="register-form-container animate__animated animate__fadeIn">
+                <div class="register-form">
+                    <div class="text-center mb-5">
+                        <h2 class="fw-bold">Create Account</h2>
+                        <p class="text-muted">Join us to start ordering delicious campus meals</p>
+                    </div>
+
+                    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="needs-validation" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 mb-4" role="alert"></div>
+
+                        <!-- Email Field -->
+                        <div class="form-group mb-4">
+                            <label asp-for="Input.Email" class="form-label">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                            </div>
+                            <span asp-validation-for="Input.Email" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <!-- Password Field -->
+                        <div class="container mt-3">
+                            <div class="row">
+                                <div class="col-md-6">
+                        <div class="form-group mb-4">
+                            <label asp-for="Input.Password" class="form-label">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Create password" />
+                                <button class="btn btn-outline-secondary toggle-password" type="button">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <div class="password-strength mt-2">
+                                <div class="progress" style="height: 4px;">
+                                    <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                </div>
+                                <small class="text-muted password-strength-text">Password strength</small>
+                            </div>
+                            <span asp-validation-for="Input.Password" class="text-danger small mt-1 d-block"></span>
+                        </div>
+                                </div>
+                                <div class="col-md-6">
+
+
+                        <!-- Confirm Password Field -->
+                        <div class="form-group mb-4">
+                            <label asp-for="Input.ConfirmPassword" class="form-label">Confirm Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Confirm your password" />
+                                <button class="btn btn-outline-secondary toggle-password" type="button">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger small mt-1 d-block"></span>
+                        </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Terms Agreement -->
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="agreeTerms" required />
+                            <label class="form-check-label" for="agreeTerms">
+                                I agree to the <a href="#" class="text-primary">Terms of Service</a> and <a href="#" class="text-primary">Privacy Policy</a>
+                            </label>
+                        </div>
+
+                        <!-- Register Button -->
+                        <button id="registerSubmit" type="submit" class="btn btn- w-100 py-3 mb-3">
+                            <span class="submit-text">Create Account</span>
+                            <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+                        </button>
+
+                        <!-- Social Registration -->
+                        @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+                        {
+                            <div class="social-register-separator my-4">
+                                <span class="text-muted">or sign up with</span>
+                            </div>
+
+                            <div class="social-register-buttons">
+                                @foreach (var provider in Model.ExternalLogins!)
+                                {
+                                    <button type="submit" class="btn btn-outline-primary social-btn" name="provider" value="@provider.Name" title="Register using your @provider.DisplayName account">
+                                        <i class="bi bi-@(provider.DisplayName.ToLower()) me-2"></i>@provider.DisplayName
+                                    </button>
+                                }
+                            </div>
+                        }
+
+                        <!-- Login Link -->
+                        <div class="text-center mt-4">
+                            <p class="text-muted">Already have an account? <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="text-primary fw-bold">Sign in</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Register Page Specific Styles */
+    .register-container {
+        min-height: 100vh;
+        background-color: var(--light-color);
+    }
+
+    [data-bs-theme="dark"] .register-container {
+        background-color: var(--dark-color);
+    }
+
+    .register-illustration {
+        background: var(--gradient-bg);
+        height: 100vh;
+        width: 80vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+    }
+
+    .illustration-wrapper {
+        max-width: 300px;
+        max-height: 300px;
+        animation: float 6s ease-in-out infinite;
+    }
+
+   
+
+    .register-form-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        padding: 2rem;
+    }
+
+    .register-form {
+        max-width: 400px;
+        width: 100%;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .input-group-text {
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus + .input-group-text,
+    .form-control:focus ~ .input-group-text {
+        background-color: var(--primary-light);
+        color: var(--primary-color);
+    }
+
+    .toggle-password {
+        transition: all 0.3s ease;
+    }
+
+        .toggle-password:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+    .password-strength .progress-bar {
+        transition: width 0.3s ease;
+    }
+
+    .social-register-separator {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        color: var(--bs-secondary-color);
+    }
+
+        .social-register-separator::before,
+        .social-register-separator::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid var(--bs-border-color);
+        }
+
+        .social-register-separator::before {
+            margin-right: 0.5em;
+        }
+
+        .social-register-separator::after {
+            margin-left: 0.5em;
+        }
+
+    .social-register-buttons {
+        display: grid;
+        gap: 0.75rem;
+    }
+
+    .social-btn {
+        transition: all 0.3s ease;
+    }
+
+        .social-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+    #registerSubmit {
+        position: relative;
+        overflow: hidden;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+
+        #registerSubmit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 91, 0, 0.3);
+        }
+    /* Responsive adjustments */
+    @@media (max-width: 991.98px) {
+        .register-illustration {
+            display: none;
+        }
+
+        .register-form-container {
+            margin: 0 auto;
+        }
+    }
+
+
+    .form-switch .form-check-input {
+        width: 3em;
+        height: 1.5em;
+        margin-right: 0.5em;
+    }
+    /* Input group styling */
+    .input-group-text {
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus + .input-group-text,
+    .form-control:focus ~ .input-group-text {
+        background-color: var(--primary-light);
+        color: var(--primary-color);
+    }
+    /* Button styling */
+    #update-profile-button {
+        position: relative;
+        overflow: hidden;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+
+        #update-profile-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 91, 0, 0.3);
+        }
+    /* Responsive adjustments */
+    @@media (max-width: 767.98px) {
+        .theme-selector {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-check-card {
+            width: 100%;
+        }
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle password visibility
+            const togglePasswordButtons = document.querySelectorAll('.toggle-password');
+
+            togglePasswordButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const input = this.closest('.input-group').querySelector('input');
+                    const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                    input.setAttribute('type', type);
+                    this.querySelector('i').classList.toggle('bi-eye');
+                    this.querySelector('i').classList.toggle('bi-eye-slash');
+                });
+            });
+
+            // Password strength indicator
+            const passwordInput = document.querySelector('#Input_Password');
+            if (passwordInput) {
+                passwordInput.addEventListener('input', function() {
+                    const strength = calculatePasswordStrength(this.value);
+                    const progressBar = document.querySelector('.password-strength .progress-bar');
+                    const strengthText = document.querySelector('.password-strength-text');
+
+                    progressBar.style.width = strength.percentage + '%';
+                    progressBar.className = 'progress-bar bg-' + strength.color;
+
+                    strengthText.textContent = strength.text;
+                    strengthText.className = 'text-muted password-strength-text text-' + strength.color;
+                });
+            }
+
+            function calculatePasswordStrength(password) {
+                let strength = 0;
+                // Length check
+                if (password.length > 0) strength += 1;
+                if (password.length >= 8) strength += 1;
+                // Complexity checks
+                if (/[A-Z]/.test(password)) strength += 1;
+                if (/[0-9]/.test(password)) strength += 1;
+                if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+
+                const strengthMap = [
+                    { percentage: 20, color: 'danger', text: 'Very Weak' },
+                    { percentage: 40, color: 'warning', text: 'Weak' },
+                    { percentage: 60, color: 'info', text: 'Moderate' },
+                    { percentage: 80, color: 'primary', text: 'Strong' },
+                    { percentage: 100, color: 'success', text: 'Very Strong' }
+                ];
+
+                return strengthMap[Math.min(strength, strengthMap.length - 1)];
+            }
+
+            // Form submission loading state
+            const form = document.getElementById('registerForm');
+            const submitBtn = document.getElementById('registerSubmit');
+            const submitText = submitBtn.querySelector('.submit-text');
+            const spinner = submitBtn.querySelector('.spinner-border');
+
+            if (form) {
+                form.addEventListener('submit', function() {
+                    submitBtn.disabled = true;
+                    submitText.textContent = 'Creating Account...';
+                    spinner.classList.remove('d-none');
+                });
+            }
+        });
+    </script>
+}

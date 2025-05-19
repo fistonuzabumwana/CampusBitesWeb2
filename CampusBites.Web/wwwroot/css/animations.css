@@ -1,0 +1,60 @@
+﻿/* wwwroot/css/animations.css */
+/* Basic animations and transitions */
+
+/* Smooth transitions on hoverable elements (Applied via --transition-default in custom-theme.css) */
+/* .btn, a, .card, .nav-link { transition: var(--transition-default); } */
+
+/* Example Keyframe Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: var(--box-shadow-sm);
+    }
+
+    50% {
+        transform: scale(1.03);
+        box-shadow: var(--box-shadow-md);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: var(--box-shadow-sm);
+    }
+}
+
+/* Classes to trigger animations (add/remove these with JS or directly in HTML) */
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+    opacity: 0; /* Start hidden */
+}
+
+.animate-pulse {
+    animation: pulse 0.6s ease-in-out;
+}
+
+/* Example: Subtle animation for adding item to cart (requires JS) */
+.add-to-cart-btn.added .icon-cart { /* Assuming an icon inside the button */
+    /* Example: a quick shake or pop */
+    animation: pulse 0.5s ease;
+}
+
+.add-to-cart-btn.added .text-add {
+    display: none;
+}
+
+.add-to-cart-btn.added .text-added {
+    display: inline;
+}
+/* Show "Added" text */

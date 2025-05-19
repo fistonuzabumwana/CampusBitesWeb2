@@ -1,0 +1,257 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Welcome Back";
+}
+
+<div class="login-container">
+    <div class="row g-0">
+        <!-- Left Column - Illustration -->
+        <div class="col-lg-6 d-none d-lg-flex align-items-center">
+            <div class="login-illustration animate__animated animate__fadeInLeft">
+                <div class="brand-logo text-center mt-4">
+                    <h2 class="display-4 fw-bold text-white">CampusBites</h2>
+                    <p class="text-white-50">Your campus food ordering experience</p>
+                </div>
+                <div class="illustration-wrapper">
+                    <img src="/images/loginillu.png" alt="Login Illustration" class="img-fluid">
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- Right Column - Login Form -->
+        <div class="col-lg-6">
+            <div class="login-form-container animate__animated animate__fadeIn">
+                <div class="login-form">
+                    <div class="text-center mb-5">
+                        <h2 class="fw-bold">Sign In</h2>
+                        <p class="text-muted">Access your account to continue</p>
+                    </div>
+
+                    <form id="account" method="post" class="needs-validation" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 mb-4" role="alert"></div>
+
+                        <!-- Email Field -->
+                        <div class="form-group mb-4">
+                            <label asp-for="Input.Email" class="form-label">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                            </div>
+                            <span asp-validation-for="Input.Email" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <!-- Password Field -->
+                        <div class="form-group mb-4">
+                            <label asp-for="Input.Password" class="form-label">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Enter your password" />
+                                <button class="btn btn-outline-secondary toggle-password" type="button">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="Input.Password" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <!-- Remember Me & Forgot Password -->
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" asp-for="Input.RememberMe" id="rememberMe" />
+                                <label class="form-check-label" for="rememberMe">Remember me</label>
+                            </div>
+                            <a id="forgot-password" asp-page="./ForgotPassword" class="text-primary">Forgot password?</a>
+                        </div>
+
+                        <!-- Login Button -->
+                        <button id="login-submit" type="submit" class="btn btn-primary w-100 py-3 mb-3">
+                            <span class="submit-text">Sign In</span>
+                            <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+                        </button>
+
+                        <!-- Social Login -->
+                        @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+                        {
+                            <div class="social-login-separator my-4">
+                                <span class="text-muted">or continue with</span>
+                            </div>
+
+                            <div class="social-login-buttons">
+                                @foreach (var provider in Model.ExternalLogins!)
+                                {
+                                    <button type="submit" class="btn btn-outline-primary social-btn" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
+                                        <i class="bi bi-@(provider.DisplayName.ToLower()) me-2"></i>@provider.DisplayName
+                                    </button>
+                                }
+                            </div>
+                        }
+
+                        <!-- Register Link -->
+                        <div class="text-center mt-4">
+                            <p class="text-muted">Don't have an account? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="text-primary fw-bold">Sign up</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Login Page Specific Styles */
+    .login-container {
+        min-height: 100vh;
+        background-color: var(--light-color);
+    }
+
+    [data-bs-theme="dark"] .login-container {
+        background-color: var(--dark-color);
+    }
+
+    .login-illustration {
+        background: var(--gradient-bg);
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+    }
+
+    .illustration-wrapper {
+        max-width: 400px;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .login-form-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        padding: 2rem;
+    }
+
+    .login-form {
+        max-width: 400px;
+        width: 100%;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .input-group-text {
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus + .input-group-text,
+    .form-control:focus ~ .input-group-text {
+        background-color: var(--primary-light);
+        color: var(--primary-color);
+    }
+
+    .toggle-password {
+        transition: all 0.3s ease;
+    }
+
+        .toggle-password:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+    .social-login-separator {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        color: var(--bs-secondary-color);
+    }
+
+        .social-login-separator::before,
+        .social-login-separator::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid var(--bs-border-color);
+        }
+
+        .social-login-separator::before {
+            margin-right: 0.5em;
+        }
+
+        .social-login-separator::after {
+            margin-left: 0.5em;
+        }
+
+    .social-login-buttons {
+        display: grid;
+        gap: 0.75rem;
+    }
+
+    .social-btn {
+        transition: all 0.3s ease;
+    }
+
+        .social-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+    #login-submit {
+        position: relative;
+        overflow: hidden;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+
+        #login-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 91, 0, 0.3);
+        }
+    /* Responsive adjustments */
+    @@media (max-width: 991.98px) {
+        .login-illustration {
+            display: none;
+        }
+
+        .login-form-container {
+            margin: 0 auto;
+        }
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle password visibility
+            const togglePassword = document.querySelector('.toggle-password');
+            const password = document.querySelector('#Input_Password');
+
+            if (togglePassword && password) {
+                togglePassword.addEventListener('click', function() {
+                    const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                    password.setAttribute('type', type);
+                    this.querySelector('i').classList.toggle('bi-eye');
+                    this.querySelector('i').classList.toggle('bi-eye-slash');
+                });
+            }
+
+            // Form submission loading state
+            const form = document.getElementById('account');
+            const submitBtn = document.getElementById('login-submit');
+            const submitText = submitBtn.querySelector('.submit-text');
+            const spinner = submitBtn.querySelector('.spinner-border');
+
+            if (form) {
+                form.addEventListener('submit', function() {
+                    submitBtn.disabled = true;
+                    submitText.textContent = 'Signing In...';
+                    spinner.classList.remove('d-none');
+                });
+            }
+        });
+    </script>
+}

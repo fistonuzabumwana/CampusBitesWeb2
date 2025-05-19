@@ -1,0 +1,400 @@
+﻿/* wwwroot/css/custom-theme.css */
+/* Core variables and base styles for CampusBites Redesign */
+
+:root {
+    /* Color Palette */
+    --brand-orange: #FF5B00;
+    --brand-white: #ffffff;
+    --brand-orange-darker: #cc4900; /* For hover states */
+    --brand-orange-rgb: 255, 91, 0; /* For RGBA usage like box-shadows */
+    /* Text & Backgrounds */
+    --text-dark: #343a40;
+    --text-light: var(--brand-white);
+    --text-muted: #6c757d;
+    --background-light: var(--brand-white);
+    --background-accent: var(--brand-orange);
+    --background-body: #f8f9fa; /* Very light grey for body background */
+    /* Borders */
+    --border-color: #dee2e6;
+    --border-color-accent: var(--brand-orange);
+    --border-radius-base: 0.375rem; /* Bootstrap standard, adjust if desired */
+    --border-radius-lg: 0.5rem;
+    /* Links */
+    --link-color: var(--brand-orange);
+    --link-hover-color: var(--brand-orange-darker);
+    /* Fonts */
+    --font-family-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    /* Transitions */
+    --transition-speed: 0.2s;
+    --transition-default: all var(--transition-speed) ease-in-out;
+    /* Shadows */
+    --box-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --box-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.07);
+    --box-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* Base Styles */
+body {
+    font-family: var(--font-family-sans-serif);
+    background-color: var(--background-body);
+    color: var(--text-dark);
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: none;
+    transition: var(--transition-default);
+}
+
+    a:hover {
+        color: var(--link-hover-color);
+        text-decoration: underline;
+    }
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-dark);
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}
+
+/* Container */
+.container, .container-fluid {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1140px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .container {
+        max-width: 1320px; /* Adjust for larger screens if needed */
+    }
+}
+
+/* Navbar Styling */
+.navbar {
+    background-color: var(--background-light) !important;
+    border-bottom: 1px solid var(--border-color);
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    box-shadow: var(--box-shadow-sm);
+    position: sticky; /* Keep navbar visible */
+    top: 0;
+    z-index: 1030; /* Ensure it's above other content */
+}
+
+.navbar-brand {
+    color: var(--brand-orange) !important;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+    .navbar-brand:hover {
+        color: var(--brand-orange-darker) !important;
+    }
+
+.navbar .navbar-nav .nav-link {
+    color: var(--text-dark) !important;
+    transition: var(--transition-default);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius-base); /* Add subtle rounding */
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
+}
+
+    .navbar .navbar-nav .nav-link:hover,
+    .navbar .navbar-nav .nav-link.active { /* Style for active page */
+        color: var(--brand-orange) !important;
+        background-color: rgba(var(--brand-orange-rgb), 0.05); /* Very light orange background on hover/active */
+    }
+
+/* Button Styling */
+.btn {
+    border-radius: var(--border-radius-base);
+    padding: 0.6rem 1.2rem; /* Slightly larger padding */
+    font-weight: 500;
+    transition: var(--transition-default);
+    border: 1px solid transparent;
+    cursor: pointer;
+    box-shadow: var(--box-shadow-sm);
+    text-transform: uppercase; /* Optional: Uppercase button text */
+    letter-spacing: 0.5px; /* Optional: Spacing */
+    font-size: 0.9rem; /* Slightly smaller font size */
+}
+
+    .btn:hover {
+        box-shadow: var(--box-shadow-md);
+        transform: translateY(-1px); /* Subtle lift */
+    }
+
+.btn-primary {
+    background-color: var(--background-accent);
+    border-color: var(--brand-orange);
+    color: var(--text-light);
+}
+
+    .btn-primary:hover {
+        background-color: var(--brand-orange-darker);
+        border-color: var(--brand-orange-darker);
+        color: var(--text-light);
+    }
+
+.btn-outline-primary {
+    background-color: transparent;
+    border-color: var(--border-color-accent);
+    color: var(--brand-orange);
+}
+
+    .btn-outline-primary:hover {
+        background-color: var(--background-accent);
+        border-color: var(--border-color-accent);
+        color: var(--text-light);
+    }
+
+/* Add styles for .btn-secondary, .btn-danger etc. if used */
+.btn-secondary {
+    background-color: var(--text-muted);
+    border-color: var(--text-muted);
+    color: var(--text-light);
+}
+
+    .btn-secondary:hover {
+        background-color: #5a6268; /* Darker grey */
+        border-color: #5a6268;
+        color: var(--text-light);
+    }
+
+
+/* Form Styling */
+.form-control,
+.form-select {
+    border: 1px solid var(--border-color);
+    padding: 0.6rem 0.85rem;
+    border-radius: var(--border-radius-base);
+    transition: var(--transition-default);
+    background-color: var(--background-light);
+    color: var(--text-dark);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.075); /* Subtle inner shadow */
+}
+
+    .form-control::placeholder {
+        color: var(--text-muted);
+        opacity: 0.7;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--border-color-accent);
+        box-shadow: 0 0 0 0.25rem rgba(var(--brand-orange-rgb), 0.25);
+        outline: 0;
+    }
+
+.form-label {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-check-input {
+    transition: var(--transition-default);
+}
+
+    .form-check-input:checked {
+        background-color: var(--brand-orange);
+        border-color: var(--brand-orange);
+    }
+
+    .form-check-input:focus {
+        border-color: var(--brand-orange);
+        box-shadow: 0 0 0 0.25rem rgba(var(--brand-orange-rgb), 0.25);
+        outline: 0;
+    }
+
+.form-check-label {
+    cursor: pointer;
+}
+
+/* Card Styling */
+.card {
+    background-color: var(--background-light);
+    border: none; /* Remove default border */
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--box-shadow-md);
+    transition: var(--transition-default);
+    margin-bottom: 1.5rem;
+    overflow: hidden; /* Ensure content respects border radius */
+}
+
+    .card:hover {
+        box-shadow: var(--box-shadow-lg);
+        transform: translateY(-4px); /* Slightly more lift */
+    }
+
+.card-img-top {
+    max-height: 220px;
+    object-fit: cover;
+    border-bottom: 1px solid var(--border-color); /* Separator line */
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+}
+
+    .card-title a { /* If title is a link */
+        color: inherit;
+        text-decoration: none;
+    }
+
+        .card-title a:hover {
+            color: var(--brand-orange);
+        }
+
+.card-text {
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.card .price { /* Add class="price" span */
+    font-weight: bold;
+    color: var(--brand-orange);
+    font-size: 1.3rem; /* Larger price */
+    display: block; /* Ensure it takes its own line or space */
+    margin-bottom: 1rem;
+}
+
+.card .card-footer { /* Optional: Style card footer */
+    background-color: #f8f9fa; /* Slightly different background */
+    border-top: 1px solid var(--border-color);
+    padding: 0.75rem 1.25rem;
+}
+
+/* Table Styling */
+.table {
+    background-color: var(--background-light);
+    border: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+}
+
+    .table th {
+        background-color: #f8f9fa; /* Light header background */
+        font-weight: 600;
+        padding: 0.75rem 1rem;
+        border-bottom: 2px solid var(--border-color);
+    }
+
+    .table td {
+        padding: 0.75rem 1rem;
+        vertical-align: middle;
+        border-top: 1px solid var(--border-color);
+    }
+
+.table-striped > tbody > tr:nth-of-type(odd) > * { /* Override bootstrap striping if needed */
+    background-color: rgba(0,0,0,.02); /* Very subtle striping */
+}
+
+.table-hover > tbody > tr:hover > * {
+    background-color: rgba(var(--brand-orange-rgb), 0.05); /* Light orange row hover */
+}
+
+/* Alert Styling */
+.alert {
+    border-radius: var(--border-radius-base);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+}
+
+.alert-primary { /* Using primary alert for brand color info */
+    color: var(--brand-orange-darker);
+    background-color: rgba(var(--brand-orange-rgb), 0.1);
+    border-color: rgba(var(--brand-orange-rgb), 0.2);
+}
+/* Add styles for alert-success, alert-danger, alert-warning, alert-info */
+.alert-success {
+    color: #0f5132;
+    background-color: #d1e7dd;
+    border-color: #badbcc;
+}
+
+.alert-danger {
+    color: #842029;
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+}
+
+.alert-warning {
+    color: #664d03;
+    background-color: #fff3cd;
+    border-color: #ffecb5;
+}
+
+.alert-info {
+    color: #055160;
+    background-color: #cff4fc;
+    border-color: #b6effb;
+}
+
+
+/* Specific Page Sections (Placeholders - Add specific styles as needed) */
+.hero-section {
+    /* Styles for your homepage hero banner */
+    padding: 4rem 0;
+    background-color: var(--brand-orange); /* Example */
+    color: var(--text-light);
+    text-align: center;
+}
+
+.menu-category-header {
+    /* Styles for headers above menu item sections */
+    border-bottom: 2px solid var(--brand-orange);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    font-size: 1.8rem;
+}
+
+.cart-summary {
+    /* Styles for the summary box in the cart/checkout */
+    background-color: var(--background-light);
+    padding: 1.5rem;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--box-shadow-md);
+    border: 1px solid var(--border-color);
+}
+
+    .cart-summary .total {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--brand-orange);
+    }
+
+/* Footer Styling */
+footer.footer {
+    background-color: #343a40; /* Dark footer */
+    color: #adb5bd; /* Light grey text */
+    padding: 2rem 0;
+    margin-top: 3rem; /* Space above footer */
+    font-size: 0.9rem;
+}
+
+    footer.footer a {
+        color: var(--brand-white);
+    }
+
+        footer.footer a:hover {
+            color: var(--brand-orange);
+        }
+
+/* Add more specific component/page styles below */

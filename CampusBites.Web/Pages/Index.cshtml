@@ -1,0 +1,641 @@
+﻿@page
+@model IndexModel
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Authorization
+@using CampusBites.Application.Common.Security
+@using Microsoft.AspNetCore.Mvc.Localization
+@using CampusBites.Web.Resources
+
+@inject IAuthorizationService AuthorizationService
+@inject IHtmlLocalizer<SharedResource> SharedLocalizer
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="landing-page animate__animated animate__fadeIn">
+    <!-- Add this at the top of your landing page, right after the opening <div class="landing-page"> -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 hero-content">
+                    <h1 class="hero-title text-gradient">@Localizer["Welcome to CampusBites"]</h1>
+                    <p class="hero-subtitle">@Localizer["Delicious food delivered fast to your campus"]</p>
+                    <div class="hero-cta">
+                        <a asp-page="/Menu" class="btn btn-primary btn-hover-glow btn-lg me-3">
+                            <i class="bi bi-menu-button-wide me-2"></i> @Localizer["Order Now"]
+                        </a>
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-light btn-lg">
+                                <i class="bi bi-person-plus me-2"></i> @Localizer["Sign Up"]
+                            </a>
+                        }
+                    </div>
+                </div>
+                <div class="col-lg-6 hero-image">
+                    <div class="food-image-container pulse">
+                        <img src="~/images/Dashburger.jpg" alt="Delicious campus food" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="hero-carousel">
+        <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
+            <!-- Indicators -->
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="0" class="active"></button>
+                <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="1"></button>
+                <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="2"></button>
+            </div>
+
+            <!-- Slides -->
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="/images/chips.jpg" class="d-block w-100" alt="Delicious campus food"
+                         onerror="this.onerror=null;this.src='/images/placeholder.jpg'">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h2 class="display-4 fw-bold">Fresh Meals Daily</h2>
+                        <p class="fs-4">Made with love by our campus chefs</p>
+                        <a href="/Menu" class="btn btn-primary btn-lg mt-3">Order Now</a>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="/images/chocolate.jpg" class="d-block w-100" alt="Student enjoying food"
+                         onerror="this.onerror=null;this.src='/images/placeholder.jpg'">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h2 class="display-4 fw-bold">Fast Delivery</h2>
+                        <p class="fs-4">Get your food in 30 minutes or less</p>
+                        <a href="/Menu" class="btn btn-primary btn-lg mt-3">View Menu</a>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="/images/fish.jpg" class="d-block w-100" alt="Variety of dishes"
+                         onerror="this.onerror=null;this.src='/images/placeholder.jpg'">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h2 class="display-4 fw-bold">Student Discounts</h2>
+                        <p class="fs-4">Special prices for campus members</p>
+                        <a href="/Account/Register" class="btn btn-primary btn-lg mt-3">Sign Up</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls - Added aria-hidden for accessibility -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </section>
+
+    <style>
+        /* Hero Carousel Styles */
+        /* Add to your existing styles */
+        .carousel-control-prev,
+        .carousel-control-next {
+            z-index: 10; /* Higher than default */
+            width: 5%; /* Ensure enough clickable area */
+        }
+
+        .carousel-indicators {
+            z-index: 10;
+        }
+        .hero-carousel {
+            margin-bottom: 3rem;
+        }
+
+        .carousel-item {
+            height: 80vh; /* Adjust height as needed */
+            min-height: 500px;
+        }
+
+            .carousel-item img {
+                object-fit: cover;
+                height: 100%;
+                width: 100%;
+            }
+
+        .carousel-caption {
+            bottom: 30%;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2rem;
+            border-radius: 1rem;
+        }
+
+        .carousel-indicators button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin: 0 8px;
+        }
+
+        /* Darken images for better text contrast */
+        .carousel-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .food-card {
+            transition: transform 0.3s ease;
+        }
+
+            .food-card:hover {
+                transform: translateY(-5px);
+            }
+
+        .food-img {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 768px) {
+            .carousel-item {
+                height: 60vh;
+                min-height: 400px;
+            }
+
+            .carousel-caption h2 {
+                font-size: 2rem;
+            }
+
+            .carousel-caption p {
+                font-size: 1rem;
+            }
+        }
+
+    </style>
+
+    <script>
+        // Optional: Add auto-cycling with pause on hover
+        document.addEventListener('DOMContentLoaded', function() {
+            const myCarousel = new bootstrap.Carousel('#mainCarousel', {
+                interval: 5000, // Change slide every 5 seconds
+                pause: 'hover' // Pause on hover
+            });
+        });
+    </script>
+    <!-- Hero Section -->
+   
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <h2 class="section-title text-center mb-5">@Localizer["Why Choose CampusBites?"]</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card glass-card">
+                        <div class="feature-icon bg-primary-light">
+                            <i class="bi bi-lightning-charge-fill text-primary"></i>
+                        </div>
+                        <h3>@Localizer["Fast Delivery"]</h3>
+                        <p>@Localizer["Get your food delivered in under 30 minutes or it's free"]</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card glass-card">
+                        <div class="feature-icon bg-success-light">
+                            <i class="bi bi-currency-exchange text-success"></i>
+                        </div>
+                        <h3>@Localizer["Affordable Prices"]</h3>
+                        <p>@Localizer["Student-friendly prices with no hidden fees"]</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card glass-card">
+                        <div class="feature-icon bg-info-light">
+                            <i class="bi bi-stars text-info"></i>
+                        </div>
+                        <h3>@Localizer["Quality Food"]</h3>
+                        <p>@Localizer["Fresh ingredients prepared by top campus chefs"]</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Add this to your landing page, replacing the static popular items carousel -->
+    <section class="popular-items-section">
+        <div class="container">
+            <h2 class="section-title text-center mb-5">Popular This Week</h2>
+            <div class="row g-4" id="featured-menu-container">
+                <div class="col-12 text-center py-3">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials-section">
+        <div class="container">
+            <h2 class="section-title text-center mb-5">@Localizer["What Students Say"]</h2>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="testimonial-card glass-card">
+                        <div class="testimonial-content">
+                            <i class="bi bi-quote quote-icon"></i>
+                            <p>CampusBites saved me during finals week! The food is delicious and arrives so fast.</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <img src="~/images/adeline.jpg" alt="Student" class="author-img">
+                            <div class="author-info">
+                                <h5>Adeline T.</h5>
+                                <div class="rating">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="testimonial-card glass-card">
+                        <div class="testimonial-content">
+                            <i class="bi bi-quote quote-icon"></i>
+                            <p>As an international student, I love having affordable, quality food options on campus.</p>
+                        </div>
+                        <div class="testimonial-author">
+							<img src="~/images/teta.jpg" alt="Student" class="author-img">
+                            <div class="author-info">
+                                <h5>Teta M.</h5>
+                                <div class="rating">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-half"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="cta-section">
+        <div class="container text-center">
+            <h2 class="mb-4">@Localizer["Ready to order?"]</h2>
+            <p class="mb-5">@Localizer["Join thousands of students enjoying great food on campus"]</p>
+            <a asp-page="/Menu" class="btn btn-primary btn-hover-glow btn-lg px-5 py-3">
+                <i class="bi bi-basket me-2"></i> @Localizer["Browse Menu"]
+            </a>
+        </div>
+    </section>
+</div>
+<style>
+
+    /* Landing Page Specific Styles */
+    .landing-page {
+        overflow-x: hidden;
+    }
+    /* Hero Section */
+    .hero-section {
+        padding: 5rem 0;
+        background: linear-gradient(135deg, rgba(255,91,0,0.1) 0%, rgba(255,255,255,0) 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    [data-bs-theme="dark"] .hero-section {
+        background: linear-gradient(135deg, rgba(255,91,0,0.2) 0%, rgba(30,30,30,0) 100%);
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        line-height: 1.2;
+    }
+
+    .hero-subtitle {
+        font-size: 1.5rem;
+        color: var(--bs-gray-600);
+        margin-bottom: 2rem;
+    }
+
+    [data-bs-theme="dark"] .hero-subtitle {
+        color: var(--bs-gray-400);
+    }
+
+    .hero-cta {
+        margin-top: 2rem;
+    }
+
+    .food-image-container {
+        position: relative;
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        transform: perspective(1000px) rotateY(-10deg);
+        transition: all 0.5s ease;
+    }
+
+        .food-image-container:hover {
+            transform: perspective(1000px) rotateY(0deg);
+        }
+    /* Text Gradient */
+    .text-gradient {
+        background: linear-gradient(90deg, var(--primary-color), #FF8C00);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    /* Sections */
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 3rem;
+        position: relative;
+        display: inline-block;
+    }
+
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+    /* Feature Cards */
+    .feature-card {
+        padding: 2rem;
+        text-align: center;
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(255,91,0,0.1);
+        }
+
+    .feature-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1.5rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+    }
+    /* Food Cards */
+    .food-card {
+        overflow: hidden;
+        margin: 0 10px;
+        transition: all 0.3s ease;
+    }
+
+        .food-card:hover {
+            transform: scale(1.05);
+        }
+
+    .food-img {
+        height: 200px;
+        overflow: hidden;
+    }
+
+        .food-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+    .food-card:hover .food-img img {
+        transform: scale(1.1);
+    }
+
+    .food-info {
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+        .food-info h3 {
+            margin-bottom: 0.5rem;
+        }
+
+    .price {
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        font-size: 1.25rem;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        padding: 5rem 0;
+        background: linear-gradient(135deg, rgba(255,91,0,0.1) 0%, rgba(255,255,255,0) 100%);
+        margin-top: 3rem;
+    }
+
+    [data-bs-theme="dark"] .cta-section {
+        background: linear-gradient(135deg, rgba(255,91,0,0.2) 0%, rgba(30,30,30,0) 100%);
+    }
+    /* Button Styles */
+    .btn-hover-glow {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+        .btn-hover-glow:hover {
+            box-shadow: 0 0 15px rgba(255, 91, 0, 0.5);
+            transform: translateY(-2px);
+        }
+    /* Glass Card */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 1rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    [data-bs-theme="dark"] .glass-card {
+        background: rgba(30, 30, 30, 0.8);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    /* Background Colors */
+    .bg-primary-light {
+        background-color: rgba(255, 91, 0, 0.1);
+    }
+
+    .bg-success-light {
+        background-color: rgba(40, 167, 69, 0.1);
+    }
+
+    .bg-info-light {
+        background-color: rgba(23, 162, 184, 0.1);
+    }
+    /* Animations */
+    .pulse {
+        animation: pulse 2s infinite;
+    }
+
+
+    /* Testimonials */
+    .testimonial-card {
+        padding: 2rem;
+        height: 100%;
+        position: relative;
+    }
+
+    .quote-icon {
+        font-size: 3rem;
+        color: rgba(255,91,0,0.1);
+        position: absolute;
+        top: 10px;
+        right: 20px;
+    }
+
+    .testimonial-content p {
+        font-size: 1.1rem;
+        font-style: italic;
+        margin-bottom: 1.5rem;
+    }
+
+    .testimonial-author {
+        display: flex;
+        align-items: center;
+    }
+
+    .author-img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 1rem;
+    }
+
+    .rating {
+        color: #FFC107;
+    }
+</style>
+
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script>
+
+                document.addEventListener('DOMContentLoaded', function() {
+            // Initialize carousel with options
+            const myCarousel = new bootstrap.Carousel('#mainCarousel', {
+                interval: 3000, // 5 second interval
+                pause: 'hover', // Pause on hover
+                wrap: true // Continuously cycle
+                
+            });
+
+            // Optional: Add keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowLeft') {
+                    myCarousel.prev();
+                }
+                if (e.key === 'ArrowRight') {
+                    myCarousel.next();
+                }
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize carousel
+            $('.popular-items-carousel').owlCarousel({
+                loop: true,
+                margin: 20,
+                nav: true,
+                dots: false,
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    768: {
+                        items: 2
+                    },
+                    992: {
+                        items: 3
+                    }
+                }
+            });
+
+            // Add animation to elements
+            const animateElements = document.querySelectorAll('.feature-card, .testimonial-card');
+            animateElements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.animation = `fadeInUp 0.5s ease forwards ${index * 0.1}s`;
+            });
+        });
+
+
+                document.addEventListener('DOMContentLoaded', function() {
+            const featuredContainer = document.getElementById('featured-menu-container');
+
+            // Fetch all menu items and pick 3 random ones
+            fetch('/api/menuitems')
+                .then(response => response.json())
+                .then(allMenuItems => {
+                    featuredContainer.innerHTML = '';
+
+                    // Get 3 random items
+                    const randomItems = allMenuItems
+                        .sort(() => 0.5 - Math.random()) // Shuffle array
+                        .slice(0, 3); // Take first 3
+
+                    randomItems.forEach(item => {
+                        const cardHtml = `
+                            <div class="col-md-4">
+                                <div class="food-card glass-card h-100">
+                                    <div class="food-img overflow-hidden">
+                                        <img src="${item.imageUrl || '/images/placeholder-food.jpg'}"
+                                             class="w-100" alt="${item.name}"
+                                             onerror="this.src='/images/placeholder-food.jpg'">
+                                    </div>
+                                    <div class="food-info p-3 text-center">
+                                        <h3>${item.name}</h3>
+                                        <p class="text-muted mb-2">${item.description || ''}</p>
+                                        <div class="price mb-3">RWF ${item.price.toFixed(2)}</div>
+                                        <a href="/Menu" class="btn btn-sm btn-primary">
+                                            View Details
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        featuredContainer.insertAdjacentHTML('beforeend', cardHtml);
+                    });
+                })
+                .catch(error => {
+                    featuredContainer.innerHTML = `
+                        <div class="col-12 text-center py-3">
+                            <p class="text-muted">Menu items not available</p>
+                        </div>
+                    `;
+                    console.error('Error loading menu items:', error);
+                });
+        });
+    </script>
+}

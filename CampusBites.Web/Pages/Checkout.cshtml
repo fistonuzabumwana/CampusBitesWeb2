@@ -1,0 +1,366 @@
+﻿
+@page
+@model CampusBites.Web.Pages.CheckoutModel
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<div class="container py-5">
+    <div class="text-center mb-5 animate__animated animate__fadeIn">
+        <h3 class="display-5 fw-bold text-gradient mb-2">@ViewData["Title"]</h3>
+        <div class="d-flex justify-content-center">
+            <div class="bg-primary" style="height: 4px; width: 80px; border-radius: 2px;"></div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Order Summary Column -->
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm sticky-top" style="top: 20px;">
+                <div class="card-body">
+                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-primary">Your Order</span>
+                        <span class="badge bg-primary rounded-pill pulse" id="checkout-cart-count">@Model.CartItems.Sum(i => i.Quantity)</span>
+                    </h4>
+                    
+                    <div class="order-items">
+                        @foreach (var item in Model.CartItems)
+                        {
+                            <div class="order-item d-flex justify-content-between align-items-center py-3 border-bottom">
+                                <div class="d-flex align-items-center">
+                                    <div class="order-item-img me-3">
+                                        <img src="@(item.ImageUrl ?? "/images/placeholder-food.jpg")" alt="@item.Name" class="img-fluid rounded-3">
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">@item.Name</h6>
+                                        <small class="text-muted">Qty: @item.Quantity</small>
+                                    </div>
+                                </div>
+                                <span class="text-muted">@((item.Price * item.Quantity).ToString("C", System.Globalization.CultureInfo.CreateSpecificCulture("rw-RW")))</span>
+                            </div>
+                        }
+                    </div>
+                    
+                    <div class="order-summary mt-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal</span>
+                            <span>@Model.CartTotal.ToString("C", new System.Globalization.CultureInfo("fr-RW"))</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Delivery Fee</span>
+                            <span>FREE</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Tax (10%)</span>
+                            <span>@((Model.CartTotal * 0.1m).ToString("C", new System.Globalization.CultureInfo("fr-RW")))</span>
+                        </div>
+                        <div class="d-flex justify-content-between fw-bold fs-5 border-top pt-3">
+                            <span>Total</span>
+                            <span class="text-primary">@((Model.CartTotal * 1.1m).ToString("C", new System.Globalization.CultureInfo("fr-RW")))</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shipping/Billing Address Column -->
+        <div class="col-lg-7">
+            <div class="checkout-form card border-0 shadow-sm">
+                <div class="card-body">
+                    <form method="post" class="needs-validation" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4"></div>
+
+                        <!-- Shipping Address -->
+                        <div class="mb-5">
+                            <h4 class="mb-4 d-flex align-items-center">
+                                <i class="bi bi-truck me-2 text-primary"></i>
+                                <span>Shipping Address</span>
+                            </h4>
+                            
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label asp-for="ShippingAddress.StreetAddress" class="form-label"></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-house-door"></i></span>
+                                        <input type="text" class="form-control" asp-for="ShippingAddress.StreetAddress" placeholder="Kn/Kg/Kk 123 St/Ave" required>
+                                    </div>
+                                    <span asp-validation-for="ShippingAddress.StreetAddress" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="ShippingAddress.Sector" class="form-label"></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-signpost"></i></span>
+                                        <input type="text" class="form-control" asp-for="ShippingAddress.Sector" required>
+                                    </div>
+                                    <span asp-validation-for="ShippingAddress.Sector" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="ShippingAddress.District" class="form-label"></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                                        <input type="text" class="form-control" asp-for="ShippingAddress.District" required>
+                                    </div>
+                                    <span asp-validation-for="ShippingAddress.District" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Billing Address -->
+                        <div class="mb-5">
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="sameAsShipping" checked>
+                                <label class="form-check-label" for="sameAsShipping">Billing address same as shipping</label>
+                            </div>
+                            
+                            <div id="billingAddressFields" style="display: none;">
+                                <h4 class="mb-4 d-flex align-items-center">
+                                    <i class="bi bi-credit-card me-2 text-primary"></i>
+                                    <span>Billing Address</span>
+                                </h4>
+                                
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label asp-for="BillingAddress.StreetAddress" class="form-label"></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-house-door"></i></span>
+                                            <input type="text" class="form-control" asp-for="BillingAddress.StreetAddress" placeholder="Kn/Kg/Kk 123 St/Ave">
+                                        </div>
+                                        <span asp-validation-for="BillingAddress.StreetAddress" class="text-danger small"></span>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label asp-for="BillingAddress.Sector" class="form-label"></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-signpost"></i></span>
+                                            <input type="text" class="form-control" asp-for="BillingAddress.Sector">
+                                        </div>
+                                        <span asp-validation-for="BillingAddress.Sector" class="text-danger small"></span>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label asp-for="BillingAddress.District" class="form-label"></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                                            <input type="text" class="form-control" asp-for="BillingAddress.District">
+                                        </div>
+                                        <span asp-validation-for="BillingAddress.District" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Method -->
+                        <div class="mb-4">
+                            <h4 class="mb-4 d-flex align-items-center">
+                                <i class="bi bi-wallet2 me-2 text-primary"></i>
+                                <span>Payment Method</span>
+                            </h4>
+                            
+                            <div class="payment-methods">
+                                <div class="form-check payment-method mb-3">
+                                    <input id="momo" type="radio" class="form-check-input" 
+                                           asp-for="SelectedPaymentMethod" value="MTNMoMo" checked>
+                                    <label class="form-check-label" for="momo">
+                                        <div class="d-flex align-items-center">
+                                            <img src="/images/mtn.png" alt="MTN MoMo" class="payment-logo me-2">
+                                            <span>MTN Mobile Money</span>
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <div class="form-check payment-method mb-3">
+                                    <input id="airtel" type="radio" class="form-check-input" 
+                                           asp-for="SelectedPaymentMethod" value="AirtelMoney">
+                                    <label class="form-check-label" for="airtel">
+                                        <div class="d-flex align-items-center">
+                                            <img src="/images/airtel.jpg" alt="Airtel Money" class="payment-logo me-2">
+                                            <span>Airtel Money</span>
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <span asp-validation-for="SelectedPaymentMethod" class="text-danger small d-block"></span>
+                            </div>
+                            
+                            <div class="row g-3 mt-2" id="paymentDetails">
+                                <div class="col-md-6">
+                                    <label asp-for="PaymentPhoneNumber" class="form-label">Phone Number</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-phone"></i></span>
+                                        <input type="tel" class="form-control" asp-for="PaymentPhoneNumber" placeholder="0781234567">
+                                    </div>
+                                    <span asp-validation-for="PaymentPhoneNumber" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button class="btn btn-primary btn-lg py-3" type="submit" id="submitBtn">
+                                <span class="submit-text">Confirm & Pay</span>
+                                <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Checkout Page Specific Styles */
+    .checkout-form {
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+
+    .order-items {
+        max-height: 300px;
+        overflow-y: auto;
+        padding-right: 0.5rem;
+    }
+
+    .order-item {
+        transition: all 0.3s ease;
+    }
+
+        .order-item:hover {
+            background-color: rgba(255, 91, 0, 0.03);
+        }
+
+    [data-bs-theme="dark"] .order-item:hover {
+        background-color: rgba(255, 91, 0, 0.05);
+    }
+
+    .order-item-img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+
+        .order-item-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .payment-methods {
+        border-radius: 0.75rem;
+        overflow: hidden;
+    }
+
+    .payment-method {
+        padding: 1rem;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    [data-bs-theme="dark"] .payment-method {
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .payment-method:hover {
+        border-color: var(--primary-color);
+        box-shadow: 0 5px 15px rgba(255, 91, 0, 0.1);
+    }
+
+    .payment-method .form-check-input:checked {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .payment-logo {
+        height: 24px;
+        width: auto;
+    }
+
+    #submitBtn {
+        position: relative;
+        overflow: hidden;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+
+        #submitBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 91, 0, 0.3);
+        }
+    /* Responsive adjustments */
+    @@media (max-width: 991.98px) {
+        .sticky-top {
+            position: static !important;
+        }
+    }
+
+    @@media (max-width: 767.98px) {
+        .order-item {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .order-item-img {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Same as shipping checkbox toggle
+            const sameAsShipping = document.getElementById('sameAsShipping');
+            const billingAddressFields = document.getElementById('billingAddressFields');
+            
+            sameAsShipping.addEventListener('change', function() {
+                if (this.checked) {
+                    billingAddressFields.style.display = 'none';
+                    // Clear validation errors when hidden
+                    document.querySelectorAll('#billingAddressFields .text-danger').forEach(el => {
+                        el.textContent = '';
+                    });
+                } else {
+                    billingAddressFields.style.display = 'block';
+                }
+            });
+
+            // Form submission loading state
+            const form = document.querySelector('form');
+            const submitBtn = document.getElementById('submitBtn');
+            const submitText = submitBtn.querySelector('.submit-text');
+            const spinner = submitBtn.querySelector('.spinner-border');
+            
+            form.addEventListener('submit', function() {
+                submitBtn.disabled = true;
+                submitText.textContent = 'Processing...';
+                spinner.classList.remove('d-none');
+            });
+
+            // Payment method change effects
+            document.querySelectorAll('input[name="SelectedPaymentMethod"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    document.querySelectorAll('.payment-method').forEach(method => {
+                        method.style.borderColor = '';
+                    });
+                    
+                    if (this.checked) {
+                        this.closest('.payment-method').style.borderColor = 'var(--primary-color)';
+                    }
+                });
+            });
+
+            // Trigger initial state
+            document.querySelector('input[name="SelectedPaymentMethod"]:checked')
+                .dispatchEvent(new Event('change'));
+        });
+    </script>
+}

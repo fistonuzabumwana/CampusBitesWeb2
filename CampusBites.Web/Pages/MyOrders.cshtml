@@ -1,0 +1,122 @@
+﻿@page
+@model CampusBites.Web.Pages.MyOrdersModel
+@{
+    ViewData["Title"] = "My Order History";
+    var cultureInfo = new System.Globalization.CultureInfo("fr-RW");
+}
+
+<div class="order-history-container animate__animated animate__fadeIn">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h3 class="display-5 fw-bold text-gradient mb-2">@ViewData["Title"]</h3>
+            <p class="text-muted">Review your past orders and track current ones</p>
+        </div>
+        <a asp-page="/Menu" class="btn btn-outline-primary btn-hover-glow">
+            <i class="bi bi-cup-hot me-2"></i>Order Again
+        </a>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="alert alert-glass alert-info alert-dismissible fade show" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                <div>@Model.Message</div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (!Model.Orders.Any())
+    {
+        <div class="empty-state glass-card text-center p-5 mt-4">
+            <i class="bi bi-basket text-muted display-4 mb-3"></i>
+            <h3 class="mb-3">No Orders Yet</h3>
+            <p class="text-muted mb-4">You haven't placed any orders yet. Ready to try something delicious?</p>
+            <a asp-page="/Menu" class="btn btn-primary btn-hover-glow px-4">
+                <i class="bi bi-menu-button-wide me-2"></i>Browse Menu
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="order-list glass-card border-0 overflow-hidden">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="glass-header">
+                        <tr>
+                            <th class="ps-4"><i class="bi bi-hash me-2"></i>Order ID</th>
+                            <th><i class="bi bi-calendar me-2"></i>Date</th>
+                            <th><i class="bi bi-currency-exchange me-2"></i>Total</th>
+                            <th><i class="bi bi-hourglass-split me-2"></i>Status</th>
+                            <th><i class="bi bi-basket me-2"></i>Items</th>
+                            <th><i class="bi bi-credit-card me-2"></i>Payment</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model.Orders)
+                        {
+                            <tr class="animate__animated animate__fadeInUp" style="--animate-order: @(Model.Orders.IndexOf(order) + 1)">
+                                <td class="ps-4 fw-medium">#@order.Id</td>
+                                <td>@order.OrderDate.ToString("g", cultureInfo)</td>
+                                <td class="fw-bold">@order.OrderTotal.ToString("C", cultureInfo)</td>
+                                <td>
+                                    <span class="status-badge @GetStatusClass(order.Status.ToString())">
+                                        @order.Status
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary-light text-primary rounded-pill">
+                                        @order.NumberOfItems @(order.NumberOfItems == 1 ? "item" : "items")
+                                    </span>
+                                </td>
+                                <td>@order.PaymentMethod</td>
+                                <td class="text-end pe-4">
+                                    <a asp-page="/OrderDetails" asp-route-id="@order.Id" 
+                                       class="btn btn-sm btn-icon btn-outline-primary rounded-circle"
+                                       data-bs-toggle="tooltip" title="View Details">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>
+
+@functions {
+    string GetStatusClass(string status)
+    {
+        return status switch
+        {
+            "Completed" => "bg-success-light text-success",
+            "Processing" => "bg-warning-light text-warning",
+            "Cancelled" => "bg-danger-light text-danger",
+            "Delivered" => "bg-info-light text-info",
+            _ => "bg-secondary-light text-secondary"
+        };
+    }
+}
+
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Add animation to empty state if present
+            const emptyState = document.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.classList.add('animate__animated', 'animate__pulse');
+            }
+        });
+    </script>
+}

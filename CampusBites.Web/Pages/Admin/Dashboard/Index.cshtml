@@ -1,0 +1,345 @@
+﻿@page
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Authorization
+@using CampusBites.Application.Common.Security
+@model CampusBites.Web.Pages.Admin.Dashboard.IndexModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@using CampusBites.Web.Resources
+@inject IAuthorizationService AuthorizationService
+@inject IHtmlLocalizer<SharedResource> SharedLocalizer
+
+@{
+    ViewData["Title"] = @SharedLocalizer["Admin Dashboard"];
+}
+
+<div class="dashboard-container">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header animate__animated animate__fadeIn">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="display-5 fw-bold mb-2">@ViewData["Title"]</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a asp-page="/Admin/Dashboard/Index">Dashboard</a></li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="connection-status">
+                <span id="connection-status" class="badge bg-secondary">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Connecting...</span>
+                </span>
+                <small class="text-muted last-updated" id="last-updated">@DateTime.Now.ToString("MMM dd, h:mm tt")</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4 animate__animated animate__fadeInUp">
+        <!-- Today's Stats -->
+        @if (Model.TodaySummary != null)
+        {
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card card border-0 bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-subtitle mb-2">Today</h6>
+                                <h2 class="card-title mb-1">@Model.TodaySummary.TotalOrders</h2>
+                                <p class="card-text">Orders</p>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="bi bi-calendar-day"></i>
+                            </div>
+                        </div>
+                        <div class="stat-footer">
+                            <span>@Model.TodaySummary.TotalRevenue.ToString("C", new System.Globalization.CultureInfo("fr-RW"))</span>
+                            <small>Revenue</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Weekly Stats -->
+        @if (Model.WeekSummary != null)
+        {
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card card border-0 bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-subtitle mb-2">This Week</h6>
+                                <h2 class="card-title mb-1">@Model.WeekSummary.TotalOrders</h2>
+                                <p class="card-text">Orders</p>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="bi bi-calendar-week"></i>
+                            </div>
+                        </div>
+                        <div class="stat-footer">
+                            <span>@Model.WeekSummary.TotalRevenue.ToString("C", new System.Globalization.CultureInfo("fr-RW"))</span>
+                            <small>Revenue</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Monthly Stats -->
+        @if (Model.TodaySummary != null)
+        {
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card card border-0 bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-subtitle mb-2">This Month</h6>
+                                <h2 class="card-title mb-1">@Model.TodaySummary.TotalOrders</h2>
+                                <p class="card-text">Orders</p>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="bi bi-calendar-month"></i>
+                            </div>
+                        </div>
+                        <div class="stat-footer">
+                            <span>@Model.TodaySummary.TotalRevenue.ToString("C", new System.Globalization.CultureInfo("fr-RW"))</span>
+                            <small>Revenue</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- All Time Stats -->
+        @if (Model.WeekSummary != null)
+        {
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card card border-0 bg-purple text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-subtitle mb-2">All Time</h6>
+                                <h2 class="card-title mb-1">@Model.WeekSummary.TotalOrders</h2>
+                                <p class="card-text">Orders</p>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="bi bi-graph-up"></i>
+                            </div>
+                        </div>
+                        <div class="stat-footer">
+                            <span>@Model.WeekSummary.TotalRevenue.ToString("C", new System.Globalization.CultureInfo("fr-RW"))</span>
+                            <small>Revenue</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Charts and Activity -->
+    <div class="row g-4">
+        <!-- Sales Chart -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="card-title mb-0">Sales Overview</h5>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary active">Daily</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary">Weekly</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary">Monthly</button>
+                        </div>
+                    </div>
+                    <div class="chart-container" style="position: relative; height: 300px;">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="card-title mb-0">Recent Activity</h5>
+                        <a asp-page="/Admin/Reports/OrderList" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div id="realtime-feed" class="activity-feed" style="max-height: 300px; overflow-y: auto;">
+                        <div class="activity-item text-muted">
+                            <i class="bi bi-hourglass-split me-2"></i>
+                            <span>Waiting for updates...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="row g-4 mt-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Quick Actions</h5>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a asp-page="/Admin/MenuItems/Index" class="btn btn-outline-primary">
+                            <i class="bi bi-menu-button-wide me-2"></i> Manage Menu
+                        </a>
+                        <a asp-page="/Admin/Users/Index" class="btn btn-outline-primary">
+                            <i class="bi bi-people me-2"></i> Manage Users
+                        </a>
+                        <a asp-page="/Admin/Reports/OrderList" class="btn btn-outline-primary">
+                            <i class="bi bi-file-earmark-bar-graph me-2"></i> View Reports
+                        </a>
+                        <a asp-page="/Admin/Roles/Index" class="btn btn-outline-primary">
+                            <i class="bi bi-shield-lock me-2"></i> Manage Roles
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script src="~/lib/microsoft/signalr/signalr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize connection status
+            const connectionStatus = document.getElementById('connection-status');
+            const statusDot = connectionStatus.querySelector('.status-dot');
+            const statusText = connectionStatus.querySelector('.status-text');
+            const lastUpdated = document.getElementById('last-updated');
+            const feedList = document.getElementById('realtime-feed');
+
+            // Initialize sales chart
+            const salesCtx = document.getElementById('salesChart').getContext('2d');
+            const salesChart = new Chart(salesCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                    datasets: [{
+                        label: 'Sales',
+                        data: [1200, 1900, 1500, 2000, 1800, 2200, 2400],
+                        borderColor: 'rgba(255, 91, 0, 1)',
+                        backgroundColor: 'rgba(255, 91, 0, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // SignalR Connection
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/dashboardHub")
+                .configureLogging(signalR.LogLevel.Information)
+                .withAutomaticReconnect()
+                .build();
+
+            // Client Methods
+            connection.on("ReceiveNewOrder", (order) => {
+                console.log("New order received:", order);
+                const activityItem = document.createElement('div');
+                activityItem.className = 'activity-item new-order animate__animated animate__fadeIn';
+
+                const orderDate = new Date(order.orderDate);
+                const formattedTime = orderDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const formattedAmount = new Intl.NumberFormat('fr-RW', {
+                    style: 'currency',
+                    currency: 'RWF'
+                }).format(order.orderTotal);
+
+                activityItem.innerHTML = `
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-cart-plus me-2"></i>
+                        <div>
+                            <strong>New Order #${order.id}</strong>
+                            <div class="text-muted small">${formattedAmount} • ${formattedTime}</div>
+                        </div>
+                    </div>
+                `;
+
+                // Remove placeholder if present
+                const placeholder = feedList.querySelector('.activity-item.text-muted');
+                if (placeholder) {
+                    placeholder.remove();
+                }
+
+                // Add to top of list
+                feedList.insertBefore(activityItem, feedList.firstChild);
+
+                // Limit list size
+                while (feedList.children.length > 5) {
+                    feedList.removeChild(feedList.lastChild);
+                }
+
+                // Update last updated time
+                lastUpdated.textContent = new Date().toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            });
+
+            // Connection status handlers
+            connection.onreconnecting(() => {
+                connectionStatus.className = "badge bg-warning";
+                statusDot.style.backgroundColor = "currentColor";
+                statusText.textContent = "Reconnecting...";
+            });
+
+            connection.onreconnected(() => {
+                connectionStatus.className = "badge bg-success";
+                statusDot.style.backgroundColor = "currentColor";
+                statusText.textContent = "Connected";
+            });
+
+            connection.onclose(() => {
+                connectionStatus.className = "badge bg-danger";
+                statusDot.style.backgroundColor = "currentColor";
+                statusText.textContent = "Disconnected";
+            });
+
+            // Start connection
+            async function start() {
+                try {
+                    await connection.start();
+                    connectionStatus.className = "badge bg-success";
+                    statusDot.style.backgroundColor = "currentColor";
+                    statusText.textContent = "Connected";
+                    console.log("SignalR Connected.");
+                } catch (err) {
+                    console.error("SignalR Connection Error: ", err);
+                    connectionStatus.className = "badge bg-danger";
+                    statusDot.style.backgroundColor = "currentColor";
+                    statusText.textContent = "Connection Failed";
+                    setTimeout(start, 5000);
+                }
+            };
+
+            start();
+        });
+    </script>
+}
