@@ -16,6 +16,8 @@ public class OrderConfirmationModel : PageModel
 
     public string? ConfirmationMessage { get; set; }
 
+    public Decimal CartTotal { get; set; }
+
     public IActionResult OnGet()
     {
         if (OrderId <= 0)

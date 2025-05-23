@@ -421,3 +421,6 @@ C:\Users\youfi\OneDrive\AUCA\.NET\Final Project\CampusBites\CampusBites.Web\obj\
 C:\Users\youfi\OneDrive\AUCA\.NET\Final Project\CampusBites\CampusBites.Web\obj\Debug\net8.0\ref\CampusBites.Web.dll
 C:\Users\youfi\OneDrive\AUCA\.NET\Final Project\CampusBites\CampusBites.Web\bin\Debug\net8.0\AutoMapper.dll
 C:\Users\youfi\OneDrive\AUCA\.NET\Final Project\CampusBites\CampusBites.Web\bin\Debug\net8.0\SixLabors.ImageSharp.dll
+C:\Users\youfi\OneDrive\AUCA\.NET\Final Project\CampusBites\CampusBites.Web\bin\Debug\net8.0\appsettings.gcp.Development.json
+C:\Users\youfi\OneDrive\AUCA\.NET\Final Project\CampusBites\CampusBites.Web\bin\Debug\net8.0\appsettings.gcp.json
+C:\Users\youfi\OneDrive\AUCA\.NET\Final Project\CampusBites\CampusBites.Web\obj\Debug\net8.0\CampusBites.Web.sourcelink.json

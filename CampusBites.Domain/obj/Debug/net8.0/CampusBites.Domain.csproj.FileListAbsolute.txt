@@ -31,3 +31,4 @@ C:\Users\youfi\OneDrive\AUCA\.NET\Final Project\CampusBites\CampusBites.Domain\o
 C:\Users\youfi\OneDrive\AUCA\.NET\Final Project\CampusBites\CampusBites.Domain\obj\Debug\net8.0\CampusBites.Domain.pdb
 C:\Users\youfi\OneDrive\AUCA\.NET\Final Project\CampusBites\CampusBites.Domain\obj\Debug\net8.0\CampusBites.Domain.genruntimeconfig.cache
 C:\Users\youfi\OneDrive\AUCA\.NET\Final Project\CampusBites\CampusBites.Domain\obj\Debug\net8.0\ref\CampusBites.Domain.dll
+C:\Users\youfi\OneDrive\AUCA\.NET\Final Project\CampusBites\CampusBites.Domain\obj\Debug\net8.0\CampusBites.Domain.sourcelink.json
