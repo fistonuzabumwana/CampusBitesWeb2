@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\youfi\\OneDrive\\AUCA\\.NET\\Final Project\\CampusBites\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{2D1B3C38-170E-4FFF-BB8C-EA1D12F3C954}|CampusBites.Web\\CampusBites.Web.csproj|c:\\users\\youfi\\onedrive\\auca\\.net\\final project\\campusbites\\campusbites.web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2D1B3C38-170E-4FFF-BB8C-EA1D12F3C954}|CampusBites.Web\\CampusBites.Web.csproj|solutionrelative:campusbites.web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{2D1B3C38-170E-4FFF-BB8C-EA1D12F3C954}|CampusBites.Web\\CampusBites.Web.csproj|c:\\users\\youfi\\onedrive\\auca\\.net\\final project\\campusbites\\campusbites.web\\pages\\orderconfirmation.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{2D1B3C38-170E-4FFF-BB8C-EA1D12F3C954}|CampusBites.Web\\CampusBites.Web.csproj|solutionrelative:campusbites.web\\pages\\orderconfirmation.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -37,10 +41,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{0D9267C7-ED84-4C60-A602-546F73C87486}|CampusBites.Infrastructure\\CampusBites.Infrastructure.csproj|c:\\users\\youfi\\onedrive\\auca\\.net\\final project\\campusbites\\campusbites.infrastructure\\services\\emailsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0D9267C7-ED84-4C60-A602-546F73C87486}|CampusBites.Infrastructure\\CampusBites.Infrastructure.csproj|solutionrelative:campusbites.infrastructure\\services\\emailsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2D1B3C38-170E-4FFF-BB8C-EA1D12F3C954}|CampusBites.Web\\CampusBites.Web.csproj|c:\\users\\youfi\\onedrive\\auca\\.net\\final project\\campusbites\\campusbites.web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2D1B3C38-170E-4FFF-BB8C-EA1D12F3C954}|CampusBites.Web\\CampusBites.Web.csproj|solutionrelative:campusbites.web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\youfi\\AppData\\Roaming\\Microsoft\\UserSecrets\\aspnet-CampusBites.Web-51bbbf19-6e15-464d-a0ca-0fb45689d676\\secrets.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
@@ -309,7 +309,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -325,20 +325,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "OrderService.cs",
-              "DocumentMoniker": "C:\\Users\\youfi\\OneDrive\\AUCA\\.NET\\Final Project\\CampusBites\\CampusBites.Application\\Services\\OrderService.cs",
-              "RelativeDocumentMoniker": "CampusBites.Application\\Services\\OrderService.cs",
-              "ToolTip": "C:\\Users\\youfi\\OneDrive\\AUCA\\.NET\\Final Project\\CampusBites\\CampusBites.Application\\Services\\OrderService.cs",
-              "RelativeToolTip": "CampusBites.Application\\Services\\OrderService.cs",
-              "ViewState": "AgIAAIEAAAAAAAAAAAAQwJAAAAAfAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-23T22:30:59.807Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "MailSettings.cs",
               "DocumentMoniker": "C:\\Users\\youfi\\OneDrive\\AUCA\\.NET\\Final Project\\CampusBites\\CampusBites.Application\\Common\\Options\\MailSettings.cs",
               "RelativeDocumentMoniker": "CampusBites.Application\\Common\\Options\\MailSettings.cs",
@@ -346,12 +333,11 @@
               "RelativeToolTip": "CampusBites.Application\\Common\\Options\\MailSettings.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-23T22:21:42.677Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-23T22:21:42.677Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "EmailSender.cs",
               "DocumentMoniker": "C:\\Users\\youfi\\OneDrive\\AUCA\\.NET\\Final Project\\CampusBites\\CampusBites.Infrastructure\\Services\\EmailSender.cs",
               "RelativeDocumentMoniker": "CampusBites.Infrastructure\\Services\\EmailSender.cs",
@@ -359,25 +345,23 @@
               "RelativeToolTip": "CampusBites.Infrastructure\\Services\\EmailSender.cs",
               "ViewState": "AgIAACYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-23T22:21:17.212Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-23T22:21:17.212Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "OrderConfirmation.cshtml",
               "DocumentMoniker": "C:\\Users\\youfi\\OneDrive\\AUCA\\.NET\\Final Project\\CampusBites\\CampusBites.Web\\Pages\\OrderConfirmation.cshtml",
               "RelativeDocumentMoniker": "CampusBites.Web\\Pages\\OrderConfirmation.cshtml",
               "ToolTip": "C:\\Users\\youfi\\OneDrive\\AUCA\\.NET\\Final Project\\CampusBites\\CampusBites.Web\\Pages\\OrderConfirmation.cshtml",
               "RelativeToolTip": "CampusBites.Web\\Pages\\OrderConfirmation.cshtml",
-              "ViewState": "AgIAACcAAAAAAAAAAAAAADIAAAAcAAAAAAAAAA==",
+              "ViewState": "AgIAADMAAAAAAAAAAAAAADIAAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-05T14:24:51.863Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-05T14:24:51.863Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "OrderConfirmation.cshtml.cs",
               "DocumentMoniker": "C:\\Users\\youfi\\OneDrive\\AUCA\\.NET\\Final Project\\CampusBites\\CampusBites.Web\\Pages\\OrderConfirmation.cshtml.cs",
               "RelativeDocumentMoniker": "CampusBites.Web\\Pages\\OrderConfirmation.cshtml.cs",
@@ -385,12 +369,36 @@
               "RelativeToolTip": "CampusBites.Web\\Pages\\OrderConfirmation.cshtml.cs",
               "ViewState": "AgIAAAsAAAAAAAAAAAAQwBEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-05T14:38:44.027Z",
+              "WhenOpened": "2025-05-05T14:38:44.027Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\youfi\\OneDrive\\AUCA\\.NET\\Final Project\\CampusBites\\CampusBites.Web\\Program.cs",
+              "RelativeDocumentMoniker": "CampusBites.Web\\Program.cs",
+              "ToolTip": "C:\\Users\\youfi\\OneDrive\\AUCA\\.NET\\Final Project\\CampusBites\\CampusBites.Web\\Program.cs",
+              "RelativeToolTip": "CampusBites.Web\\Program.cs",
+              "ViewState": "AgIAAJgAAAAAAAAAAAAAAKAAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-07T01:43:30.94Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
+              "Title": "OrderService.cs",
+              "DocumentMoniker": "C:\\Users\\youfi\\OneDrive\\AUCA\\.NET\\Final Project\\CampusBites\\CampusBites.Application\\Services\\OrderService.cs",
+              "RelativeDocumentMoniker": "CampusBites.Application\\Services\\OrderService.cs",
+              "ToolTip": "C:\\Users\\youfi\\OneDrive\\AUCA\\.NET\\Final Project\\CampusBites\\CampusBites.Application\\Services\\OrderService.cs",
+              "RelativeToolTip": "CampusBites.Application\\Services\\OrderService.cs",
+              "ViewState": "AgIAAIEAAAAAAAAAAAAQwJAAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-23T22:30:59.807Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "Checkout.cshtml",
               "DocumentMoniker": "C:\\Users\\youfi\\OneDrive\\AUCA\\.NET\\Final Project\\CampusBites\\CampusBites.Web\\Pages\\Checkout.cshtml",
               "RelativeDocumentMoniker": "CampusBites.Web\\Pages\\Checkout.cshtml",
@@ -398,12 +406,11 @@
               "RelativeToolTip": "CampusBites.Web\\Pages\\Checkout.cshtml",
               "ViewState": "AgIAACoAAAAAAAAAAAAAAEgAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-04T23:37:25.557Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-04T23:37:25.557Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Checkout.cshtml.cs",
               "DocumentMoniker": "C:\\Users\\youfi\\OneDrive\\AUCA\\.NET\\Final Project\\CampusBites\\CampusBites.Web\\Pages\\Checkout.cshtml.cs",
               "RelativeDocumentMoniker": "CampusBites.Web\\Pages\\Checkout.cshtml.cs",
@@ -411,12 +418,11 @@
               "RelativeToolTip": "CampusBites.Web\\Pages\\Checkout.cshtml.cs",
               "ViewState": "AgIAAMgAAAAAAAAAAAAYwNMAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-05T14:34:02.54Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-05T14:34:02.54Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "IEmailSender.cs",
               "DocumentMoniker": "C:\\Users\\youfi\\OneDrive\\AUCA\\.NET\\Final Project\\CampusBites\\CampusBites.Application\\Common\\Interfaces\\IEmailSender.cs",
               "RelativeDocumentMoniker": "CampusBites.Application\\Common\\Interfaces\\IEmailSender.cs",
@@ -424,12 +430,11 @@
               "RelativeToolTip": "CampusBites.Application\\Common\\Interfaces\\IEmailSender.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-23T22:21:55.795Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-23T22:21:55.795Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "OrderDetails.cshtml.cs",
               "DocumentMoniker": "C:\\Users\\youfi\\OneDrive\\AUCA\\.NET\\Final Project\\CampusBites\\CampusBites.Web\\Pages\\OrderDetails.cshtml.cs",
               "RelativeDocumentMoniker": "CampusBites.Web\\Pages\\OrderDetails.cshtml.cs",
@@ -437,8 +442,7 @@
               "RelativeToolTip": "CampusBites.Web\\Pages\\OrderDetails.cshtml.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-23T22:24:31.829Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-23T22:24:31.829Z"
             },
             {
               "$type": "Document",
@@ -450,8 +454,7 @@
               "RelativeToolTip": "CampusBites.Web\\appsettings.Development.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-05-23T03:54:07.475Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-23T03:54:07.475Z"
             },
             {
               "$type": "Document",
@@ -463,8 +466,7 @@
               "RelativeToolTip": "CampusBites.Web\\appsettings.gcp.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-05-23T03:54:13.413Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-23T03:54:13.413Z"
             },
             {
               "$type": "Document",
@@ -476,8 +478,7 @@
               "RelativeToolTip": "CampusBites.Web\\libman.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-05-23T20:46:23.26Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-23T20:46:23.26Z"
             },
             {
               "$type": "Document",
@@ -489,21 +490,7 @@
               "RelativeToolTip": "..\\..\\..\\..\\..\\AppData\\Roaming\\Microsoft\\UserSecrets\\aspnet-CampusBites.Web-51bbbf19-6e15-464d-a0ca-0fb45689d676\\secrets.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-05-23T20:46:55.28Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\youfi\\OneDrive\\AUCA\\.NET\\Final Project\\CampusBites\\CampusBites.Web\\Program.cs",
-              "RelativeDocumentMoniker": "CampusBites.Web\\Program.cs",
-              "ToolTip": "C:\\Users\\youfi\\OneDrive\\AUCA\\.NET\\Final Project\\CampusBites\\CampusBites.Web\\Program.cs",
-              "RelativeToolTip": "CampusBites.Web\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAbAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-07T01:43:30.94Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-23T20:46:55.28Z"
             },
             {
               "$type": "Document",
@@ -515,8 +502,7 @@
               "RelativeToolTip": "CampusBites.Web\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-05-19T20:08:36.612Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-19T20:08:36.612Z"
             },
             {
               "$type": "Document",

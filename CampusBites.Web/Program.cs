@@ -13,50 +13,54 @@ using System.Globalization;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc.Razor;
 using CampusBites.Application.Services;
+using System.Reflection; // Ensure this is present if using Assembly.GetEntryAssembly() for AutoMapper
 
 internal class Program
 {
     private static async Task Main(string[] args)
     {
+        // This line is crucial. WebApplication.CreateBuilder(args) automatically sets up:
+        // 1. appsettings.json
+        // 2. appsettings.{EnvironmentName}.json (e.g., appsettings.Development.json)
+        // 3. User Secrets (if in Development environment)
+        // 4. Environment Variables
+        // 5. Command-line arguments
         var builder = WebApplication.CreateBuilder(args);
 
-        // --- Add/Configure Localization Services ---
-        // 1. Add Localization service, specifying Resource path
-        builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+        // --- CUSTOM CONFIGURATION ADDITION (no clearing needed) ---
+        // ONLY add appsettings.gcp.json when in the "Gcp" environment.
+        // This file will then override any matching settings from appsettings.json or
+        // appsettings.Production.json (if ASPNETCORE_ENVIRONMENT was "Production" instead of "Gcp").
+        if (builder.Environment.IsEnvironment("Gcp")) // "Gcp" is your custom environment name
+        {
+            builder.Configuration.AddJsonFile("appsettings.gcp.json", optional: true, reloadOnChange: true);
+        }
+        // No need to explicitly add AddEnvironmentVariables() here, as CreateBuilder does it by default
+        // and it's already the last source, so it always overrides everything loaded before it.
+        // --- END CUSTOM CONFIGURATION ADDITION ---
 
-        // 2. Configure Razor Pages/MVC to support View & DataAnnotations localization
+
+        // --- Add/Configure Localization Services ---
+        builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
         builder.Services.AddRazorPages()
             .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
             .AddDataAnnotationsLocalization(options =>
             {
-                // Optional: Register a shared resource type for DataAnnotations validation messages
-                // Requires creating a dummy class e.g. Resources/SharedResource.cs
-                // options.DataAnnotationLocalizerProvider = (type, factory) =>
-                //     factory.Create(typeof(Resources.SharedResource));
+                // ... (your DataAnnotationLocalizerProvider setup)
             });
-
-        // 3. Configure Request Localization Options
         builder.Services.Configure<RequestLocalizationOptions>(options =>
         {
-            // Define supported cultures
             var supportedCultures = new[]
             {
-        new CultureInfo("en-US"), // English (United States) - Default
-        new CultureInfo("fr-RW"), // French (Rwanda)
-        new CultureInfo("rw-RW")  // Kinyarwanda (Rwanda)
-                                  // Add other languages as needed
+                new CultureInfo("en-US"),
+                new CultureInfo("fr-RW"),
+                new CultureInfo("rw-RW")
             };
-
             options.DefaultRequestCulture = new RequestCulture("en-US");
             options.SupportedCultures = supportedCultures;
             options.SupportedUICultures = supportedCultures;
-
-            // IMPORTANT: Add CookieRequestCultureProvider to read preference from cookie
-            // It looks for a cookie named ".AspNetCore.Culture" by default
             options.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider());
         });
-
-        // --- End Localization Services ---
         builder.Services.AddControllersWithViews()
             .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
             .AddDataAnnotationsLocalization(options =>
@@ -66,47 +70,35 @@ internal class Program
             });
 
 
-
-
         // --- Service Configuration ---
-        builder.Services.AddHttpContextAccessor(); // Needed for session access in services
-        builder.Services.AddDistributedMemoryCache(); // Needed for default session storage
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddDistributedMemoryCache();
         builder.Services.AddSession(options =>
         {
-            options.IdleTimeout = TimeSpan.FromMinutes(30); // Example timeout
+            options.IdleTimeout = TimeSpan.FromMinutes(30);
             options.Cookie.HttpOnly = true;
             options.Cookie.IsEssential = true;
         });
 
         builder.Services.AddApplicationServices();
-        builder.Services.AddInfrastructureServices(builder.Configuration);
-        //builder.Services.AddRazorPages();
+        builder.Services.AddInfrastructureServices(builder.Configuration); // Passes IConfiguration
         builder.Services.AddControllers();
         builder.Services.AddSignalR();
-        // --- End Service Configuration ---
 
         // --- REGISTER NOTIFICATION SERVICE ---
         builder.Services.AddTransient<IDashboardNotifier, SignalRDashboardNotifier>();
-        // --- END REGISTER ---
-        // In Program.cs or Startup.cs
+
+        // For AutoMapper, ensure it finds profiles in your project assemblies
+        // If MappingProfile is in the same assembly as Program.cs (CampusBites.Web), typeof(MappingProfile) is fine.
+        // If it's in another project like CampusBites.Application, you might use Assembly.GetEntryAssembly()
+        // or typeof(SomeTypeInApplicationAssembly).Assembly
         builder.Services.AddAutoMapper(typeof(MappingProfile));
 
         builder.Services.AddScoped<IMenuItemService, MenuItemService>();
 
-
         var app = builder.Build();
 
-        // Replace the following line:
-        // Replace the following line:  
-        // var locOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>();  
-
-
-
-
         // Apply localization
-        // --- Add Request Localization Middleware ---
-        // IMPORTANT: Add this early in the pipeline, after Routing but before components
-        // that need the culture (like Auth, MVC/Razor Pages).
         var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>()?.Value;
         if (localizationOptions != null)
         {
@@ -114,61 +106,69 @@ internal class Program
         }
         else
         {
-            // Handle error - options not configured? Should not happen if configured above.
-            app.UseRequestLocalization(); // Use defaults? Might cause issues.
+            app.UseRequestLocalization();
             app.Logger.LogWarning("RequestLocalizationOptions not found, using defaults.");
         }
-        // --- End Add Middleware ---
-
 
         QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
-
+        // Database Initialization
         using (var scope = app.Services.CreateScope())
         {
             var services = scope.ServiceProvider;
-            // Log initialization attempt (optional)
-            var logger = services.GetRequiredService<ILogger<Program>>(); // Get logger if needed
+            var logger = services.GetRequiredService<ILogger<Program>>();
             logger.LogInformation("Attempting database initialization and seeding...");
-
             await ApplicationDbInitializer.InitializeDatabaseAsync(services);
         }
 
         // --- Middleware Pipeline Configuration ---
         if (app.Environment.IsDevelopment())
         {
+            app.UseDeveloperExceptionPage();
             app.UseMigrationsEndPoint();
-            // app.UseDeveloperExceptionPage(); // Often useful too
         }
         else
         {
             app.UseExceptionHandler("/Error");
             app.UseHsts();
+            app.UseHttpsRedirection();
         }
 
         app.UseHttpsRedirection();
         app.UseStaticFiles();
-
         app.UseRouting();
-
-
-
-        // --- ADD SESSION MIDDLEWARE HERE ---
         app.UseSession();
-        // --- END ADD ---
-
         app.UseAuthentication();
-        app.UseAuthorization(); // Must come after UseAuthentication
+        app.UseAuthorization();
 
         app.MapRazorPages();
         app.MapControllers();
         app.MapHub<DashboardHub>("/dashboardHub");
 
+        // --- Database Initialization with Error Handling --- (This block is a duplicate of the one above)
+        // You only need one block for database initialization. The one directly after QuestPDF.Settings.License
+        // is usually sufficient. Removing this duplicate to avoid confusion.
+        // try
+        // {
+        //     using (var scope = app.Services.CreateScope())
+        //     {
+        //         var services = scope.ServiceProvider;
+        //         var logger = services.GetRequiredService<ILogger<Program>>();
+        //         logger.LogInformation("Attempting database initialization...");
+        //         await ApplicationDbInitializer.InitializeDatabaseAsync(services);
+        //         logger.LogInformation("Database initialization completed.");
+        //     }
+        // }
+        // catch (Exception ex)
+        // {
+        //     app.Logger.LogError(ex, "An error occurred while initializing the database");
+        // }
 
-        // app.MapFallbackToFile("index.html"); // Usually for SPAs
+        // --- Run Configuration ---
+        var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+        var url = $"http://0.0.0.0:{port}";
 
-        // --- End Middleware Pipeline Configuration ---
-
-        app.Run();
+        app.Logger.LogInformation($"Starting application on {url}");
+        app.Run(url);
     }
 }
